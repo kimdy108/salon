@@ -13,9 +13,17 @@ import java.security.spec.AlgorithmParameterSpec;
 @Slf4j
 public class Common {
 
-    public static final String AUTHCHAR = "🅂🄰🄻🄾🄽🄲" ; // 🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉
+    public class StatusCode {
+        public static final int RETURN_SUCCESS = 1000;
+        public static final int RETURN_AUTHFAIL = 9996;
+        public static final int RETURN_EXPIRE = 9997;
+        public static final int RETURN_NOTOKEN = 9998;
+        public static final int RETURN_ERROR = 9999;
+    }
+
+    public static final String AUTHCHAR = "🅂🄰🄻🄾🄽" ; // 🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉
     public static final String DEFINEAUTHKEY = "BKroUrRPzJokrDeFfkkBQnVEeQshnQLz";
-    public static final String DEFINEAUTHIV = "KIMDY@SALON";
+    public static final String DEFINEAUTHIV = "KIMDY@SALONHAIRS";
 
     public static String encryptString(String data) {
         try {

@@ -1,5 +1,6 @@
 package com.project.salon.main.api.utils.jwt;
 
+import com.project.salon.main.api.dto.constant.admin.AdminRole;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,9 +43,10 @@ public class JWTUtil {
         return result;
     }
 
-    public String createAuthToken(String username, String role) {
+    public String createAuthToken(String username, String userID, AdminRole role) {
         return Jwts.builder()
                 .claim("username", username)
+                .claim("userID", userID)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
 //                .expiration(new Date(System.currentTimeMillis() + expirationTime)) // 10시간
@@ -53,9 +55,10 @@ public class JWTUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String username, String role) {
+    public String createRefreshToken(String username, String userID, AdminRole role) {
         return Jwts.builder()
                 .claim("username", username)
+                .claim("userID", userID)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expirationTime * 24 * 7)) // 7일

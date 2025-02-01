@@ -23,10 +23,13 @@ spring:
       port: 6379
       password:
 
+server:
+  port: 1180
+
 logging:
   level:
     root: error
-    com.project.saloncalendarmainapi: info
+    com.project.salon.main.api: info
     org.hibernate.resource: info
     com.zaxxer.hikari.pool.HikariPool: debug
     com.zaxxer.hikari: trace
