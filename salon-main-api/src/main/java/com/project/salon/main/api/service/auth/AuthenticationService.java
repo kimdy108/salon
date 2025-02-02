@@ -4,6 +4,7 @@ import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.company.SalonCompany;
 import com.project.salon.main.api.dto.admin.AdminAuth;
 import com.project.salon.main.api.dto.admin.AdminLogin;
+import com.project.salon.main.api.dto.admin.AdminRefresh;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.company.SalonCompanyRepository;
@@ -11,6 +12,7 @@ import com.project.salon.main.api.service.component.RedisService;
 import com.project.salon.main.api.utils.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +43,12 @@ public class AuthenticationService {
 //        String companyNumber = decryptStringSalt(adminLogin.getCompanyNumber());
 
         SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyNumber);
-        if (salonCompany == null) throw new RuntimeException("authFail");
+        if (salonCompany == null) throw new UsernameNotFoundException("authFail");
 
         SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminIDAndCompanySeq(adminID, salonCompany.getSeq());
-        if (salonAdmin == null) throw new RuntimeException("authFail");
-        if (IsYesNo.NO.equals(salonAdmin.getIsActive())) throw new RuntimeException("authFail");
-        if (!passwordEncoder.matches(adminPassword, salonAdmin.getAdminPassword())) throw new RuntimeException("authFail");
+        if (salonAdmin == null) throw new UsernameNotFoundException("authFail");
+        if (IsYesNo.NO.equals(salonAdmin.getIsActive())) throw new UsernameNotFoundException("authFail");
+        if (!passwordEncoder.matches(adminPassword, salonAdmin.getAdminPassword())) throw new UsernameNotFoundException("authFail");
 
         String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminRole());
         String refreshToken = jwtUtil.createRefreshToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminRole());
@@ -61,7 +63,7 @@ public class AuthenticationService {
         salonAdminRepository.updateLastDateByAdminGuid(salonAdmin.getAdminGuid(), LocalDateTime.now());
 
         return AdminAuth.builder()
-                .accessToken(accessTokenEnc)
+                .accessToken(accessToken)
                 .refreshToken(refreshTokenEnc)
                 .userName(salonAdmin.getAdminName())
                 .userGuid(salonAdmin.getAdminGuid())
@@ -69,5 +71,25 @@ public class AuthenticationService {
                 .companyGuid(salonCompany.getCompanyGuid())
                 .sessionGuid(sessionGuid)
                 .build();
+    }
+
+    public String refresh(AdminRefresh adminRefresh) {
+        String userAccount = adminRefresh.getUserAccount();
+        String refreshToken = adminRefresh.getRefreshToken();
+
+//        String userAccount = decryptStringSalt(adminRefresh.getUserAccount());
+//        String refreshToken = decryptStringSalt(adminRefresh.getRefreshToken());
+
+        String redisRefreshToken = redisService.getValues(userAccount);
+        if (!redisRefreshToken.equals(refreshToken)) throw new RuntimeException("refreshFail");
+
+        String userID = userAccount.split("-")[0];
+
+        SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminID(userID);
+        if (salonAdmin == null) throw new UsernameNotFoundException("authFail");
+
+        String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminRole());
+
+        return encryptStringSalt(accessToken);
     }
 }

@@ -2,12 +2,11 @@ package com.project.salon.main.api.controller.auth;
 
 import com.project.salon.main.api.dto.admin.AdminAuth;
 import com.project.salon.main.api.dto.admin.AdminLogin;
+import com.project.salon.main.api.dto.admin.AdminRefresh;
 import com.project.salon.main.api.dto.common.ResponseMsg;
 import com.project.salon.main.api.service.auth.AuthenticationService;
-import com.project.salon.main.api.utils.Common;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,14 +38,13 @@ public class AuthenticationController {
                 adminAuth.getSessionGuid()
         );
 
-        ResponseMsg responseMsg = ResponseMsg.builder()
-                .retStatus(true)
-                .retCode(Common.StatusCode.RETURN_SUCCESS)
-                .retHttpCode(HttpStatus.ACCEPTED.value())
-                .retHttpStatus(HttpStatus.ACCEPTED)
-                .retData(result)
-                .build();
+        return ResponseMsg.successResponse(result);
+    }
 
-        return ResponseEntity.ok().body(responseMsg);
+    @PostMapping("/refresh")
+    public ResponseEntity<ResponseMsg> refresh (@RequestBody AdminRefresh adminRefresh, HttpServletResponse res) {
+        res.setHeader("accessToken", authenticationService.refresh(adminRefresh));
+
+        return ResponseMsg.successResponse("success");
     }
 }
