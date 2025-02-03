@@ -52,4 +52,26 @@ public class ResponseMsg {
 
         return ResponseEntity.badRequest().body(responseMsg);
     }
+
+////////// security filter exception response //////////
+
+    public static ResponseMsg noTokenResponse(Object data) {
+        return ResponseMsg.builder()
+                .retStatus(false)
+                .retCode(Common.StatusCode.RETURN_NOTOKEN)
+                .retHttpStatus(HttpStatus.UNAUTHORIZED)
+                .retHttpCode(HttpStatus.UNAUTHORIZED.value())
+                .retData(data)
+                .build();
+    }
+
+    public static ResponseMsg expiredTokenResponse(Object data) {
+        return ResponseMsg.builder()
+                .retStatus(false)
+                .retCode(Common.StatusCode.RETURN_EXPIRE)
+                .retHttpStatus(HttpStatus.PRECONDITION_FAILED)
+                .retHttpCode(HttpStatus.PRECONDITION_FAILED.value())
+                .retData(data)
+                .build();
+    }
 }

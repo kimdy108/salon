@@ -1,6 +1,7 @@
 package com.project.salon.main.api.config.security.filter;
 
-import com.project.salon.main.api.dto.common.FilterErrorMsg;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.salon.main.api.dto.common.ResponseMsg;
 import com.project.salon.main.api.utils.Common;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,36 +17,23 @@ import java.io.IOException;
 
 @Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
         } catch (AccessDeniedException ex) {
-            setErrorResponse(response,
-                    Common.StatusCode.RETURN_NOTOKEN,
-                    HttpStatus.UNAUTHORIZED,
-                    "noToken");
+            setErrorResponse(response, HttpStatus.UNAUTHORIZED, ResponseMsg.noTokenResponse("noToken"));
         } catch (AccountExpiredException e) {
-            setErrorResponse(response,
-                    Common.StatusCode.RETURN_EXPIRE,
-                    HttpStatus.PRECONDITION_FAILED,
-                    "expiredToken");
+            setErrorResponse(response, HttpStatus.PRECONDITION_FAILED, ResponseMsg.expiredTokenResponse("expiredToken"));
         }
     }
 
-    public void setErrorResponse(HttpServletResponse response, int retCode, HttpStatus retHttpStatus, String retData) throws IOException {
+    public void setErrorResponse(HttpServletResponse response, HttpStatus httpStatus, ResponseMsg responseMsg) throws IOException {
 
-        response.setStatus(retHttpStatus.value());
+        response.setStatus(httpStatus.value());
         response.setContentType("application/json; charset=UTF-8");
-        response.getWriter().write(
-                FilterErrorMsg.builder()
-                        .retStatus(false)
-                        .retCode(retCode)
-                        .retHttpStatus(retHttpStatus)
-                        .retHttpCode(retHttpStatus.value())
-                        .retData(retData)
-                        .build().convertToJson()
-        );
+        response.getWriter().write(objectMapper.writeValueAsString(responseMsg));
     }
 }

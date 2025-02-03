@@ -1,6 +1,6 @@
 <template>
-  <div>
-    loading
+  <div class="w-full bg-green-50">
+    <LoadingCircle />
   </div>
 </template>
 
@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/userStore'
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ApiService from '@/services/ApiService'
+import LoadingCircle from '@/components/common/LoadingCircle.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
