@@ -1,12 +1,11 @@
 package com.project.salon.main.api.controller.setting;
 
 import com.project.salon.main.api.dto.common.ResponseMsg;
+import com.project.salon.main.api.dto.system.InstallSalon;
 import com.project.salon.main.api.service.setting.InstallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,5 +16,11 @@ public class InstallController {
     @GetMapping("/check")
     public ResponseEntity<ResponseMsg> installCheck() {
         return ResponseMsg.successResponse(installService.installCheck());
+    }
+
+    @PostMapping("/salon")
+    public ResponseEntity<ResponseMsg> installSalon(@RequestBody InstallSalon installSalon) {
+        installService.installSalon(installSalon);
+        return ResponseMsg.successResponse("success");
     }
 }

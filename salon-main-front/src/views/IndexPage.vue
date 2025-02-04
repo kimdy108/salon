@@ -53,7 +53,7 @@ const getInstallCheck = async () => {
   })
   let returnResult = false
   if (checkResult.retStatus) {
-    returnResult = checkResult.retStatus
+    returnResult = checkResult.retData
   }
   return returnResult
 }

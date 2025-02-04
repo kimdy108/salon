@@ -9,6 +9,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.UUID;
 
 @Slf4j
 public class Common {
@@ -24,6 +25,11 @@ public class Common {
     public static final String AUTHCHAR = "🅂🄰🄻🄾🄽" ; // 🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉
     public static final String DEFINEAUTHKEY = "BKroUrRPzJokrDeFfkkBQnVEeQshnQLz";
     public static final String DEFINEAUTHIV = "KIMDY@SALONHAIRS";
+
+    public static final UUID EMPTY_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final Long EMPTY_SEQ = 0L;
+
+    public static final String INSTALL_AUTH_KEY = "0x7C141E7bD107fF294788Acd6A9d5a9e334b46E27";
 
     public static String encryptString(String data) {
         try {
