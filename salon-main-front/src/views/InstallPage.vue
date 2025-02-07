@@ -2,6 +2,10 @@
   <div class="min-h-screen transition-all duration-300 ease-in-out">
     <div class="w-full h-screen flex items-center justify-center">
       <div class="w-1/2 border rounded-lg shadow-lg">
+        <div class="flex justify-center items-center mt-20 h-12">
+          <span class="text-2xl font-bold text-sky-500 mr-2">Salon Hair</span> 
+          <span class="text-2xl font-bold text-gray-800">설치</span>
+        </div>
         <div class="px-12 py-10 w-full text-gray-600">
           <SalonInput inputTitle="인증키" :isRequire="true" inputType="text" inputPlaceholder="0x000..." :isDisabled="false" :isPassword="false" v-model:inputValue="authKey" />
           <SalonInput inputTitle="아이디" :isRequire="true" inputType="text" inputPlaceholder="ID" :isDisabled="false" :isPassword="false" v-model:inputValue="adminID" />
@@ -9,7 +13,7 @@
           <SalonInput inputTitle="이름" :isRequire="true" inputType="text" inputPlaceholder="Name" :isDisabled="false" :isPassword="false" v-model:inputValue="adminName" />
           <SalonInput inputTitle="전화번호" :isRequire="true" inputType="text" inputPlaceholder="Phone" :isDisabled="false" :isPassword="false" v-model:inputValue="adminPhone" />
           <SalonInput inputTitle="이메일" :isRequire="true" inputType="text" inputPlaceholder="Email" :isDisabled="false" :isPassword="false" v-model:inputValue="adminEmail" />
-          <button class="w-full bg-sky-600 hover:bg-sky-700 py-5 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out mt-3" @click="installSalon()">
+          <button class="w-full bg-sky-500 hover:bg-sky-600 py-5 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out mt-3" @click="installSalon()">
             <span class="text-white font-bold text-md">설치</span>
           </button>
         </div>

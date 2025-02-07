@@ -1,7 +1,5 @@
 import axios from 'axios'
 import { baseUrl } from '@/references/config'
-import { ref } from 'vue';
-import { decryptStringSalt } from '@/utils/common';
 
 ////////////////////////// REQUEST //////////////////////////
 axios.interceptors.request.use(async function (config) {

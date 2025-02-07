@@ -34,18 +34,18 @@ public class AuthenticationService {
     private final SalonCompanyRepository salonCompanyRepository;
 
     public AdminAuth login (AdminLogin adminLogin) {
-        String adminID = adminLogin.getUserID();
-        String adminPassword = adminLogin.getUserPassword();
-        String companyNumber = adminLogin.getCompanyNumber();
+        String adminID = decryptStringSalt(adminLogin.getUserID());
+        String adminPassword = decryptStringSalt(adminLogin.getUserPassword());
+        String companyNumber = decryptStringSalt(adminLogin.getCompanyNumber());
+        Long companySeq = 0L;
 
-//        String adminID = decryptStringSalt(adminLogin.getUserID());
-//        String adminPassword = decryptStringSalt(adminLogin.getUserPassword());
-//        String companyNumber = decryptStringSalt(adminLogin.getCompanyNumber());
+        if (!companyNumber.equals("0")) {
+            SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyNumber);
+            if (salonCompany == null) throw new UsernameNotFoundException("authFail");
+            companySeq = salonCompany.getSeq();
+        }
 
-        SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyNumber);
-        if (salonCompany == null) throw new UsernameNotFoundException("authFail");
-
-        SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminIDAndCompanySeq(adminID, salonCompany.getSeq());
+        SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminIDAndCompanySeq(adminID, companySeq);
         if (salonAdmin == null) throw new UsernameNotFoundException("authFail");
         if (IsYesNo.NO.equals(salonAdmin.getIsActive())) throw new UsernameNotFoundException("authFail");
         if (!passwordEncoder.matches(adminPassword, salonAdmin.getAdminPassword())) throw new UsernameNotFoundException("authFail");
@@ -63,22 +63,19 @@ public class AuthenticationService {
         salonAdminRepository.updateLastDateByAdminGuid(salonAdmin.getAdminGuid(), LocalDateTime.now());
 
         return AdminAuth.builder()
-                .accessToken(accessToken)
+                .accessToken(accessTokenEnc)
                 .refreshToken(refreshTokenEnc)
                 .userName(salonAdmin.getAdminName())
                 .userGuid(salonAdmin.getAdminGuid())
                 .userRole(salonAdmin.getAdminRole())
-                .companyGuid(salonCompany.getCompanyGuid())
+                .companyGuid(salonAdmin.getCompanyGuid())
                 .sessionGuid(sessionGuid)
                 .build();
     }
 
     public String refresh(AdminRefresh adminRefresh) {
-        String userAccount = adminRefresh.getUserAccount();
-        String refreshToken = adminRefresh.getRefreshToken();
-
-//        String userAccount = decryptStringSalt(adminRefresh.getUserAccount());
-//        String refreshToken = decryptStringSalt(adminRefresh.getRefreshToken());
+        String userAccount = decryptStringSalt(adminRefresh.getUserAccount());
+        String refreshToken = decryptStringSalt(adminRefresh.getRefreshToken());
 
         String redisRefreshToken = redisService.getValues(userAccount);
         if (!redisRefreshToken.equals(refreshToken)) throw new RuntimeException("refreshFail");

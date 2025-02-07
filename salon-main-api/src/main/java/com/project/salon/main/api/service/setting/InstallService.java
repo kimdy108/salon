@@ -8,6 +8,7 @@ import com.project.salon.main.api.dto.system.InstallSalon;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.setting.SalonSettingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,8 @@ import static com.project.salon.main.api.utils.Common.*;
 @Service
 @RequiredArgsConstructor
 public class InstallService {
+    private final BCryptPasswordEncoder passwordEncoder;
+
     private final SalonSettingRepository salonSettingRepository;
     private final SalonAdminRepository salonAdminRepository;
 
@@ -38,12 +41,12 @@ public class InstallService {
         SalonAdmin salonAdmin = SalonAdmin.builder()
                 .adminGuid(UUID.randomUUID())
                 .adminID(decryptStringSalt(installSalon.getAdminID()))
-                .adminPassword(decryptString(installSalon.getAdminPassword()))
+                .adminPassword(passwordEncoder.encode(decryptStringSalt(installSalon.getAdminPassword())))
                 .companyGuid(EMPTY_UUID)
                 .companySeq(EMPTY_SEQ)
-                .adminName(decryptString(installSalon.getAdminName()))
-                .adminPhone(decryptString(installSalon.getAdminPhone()))
-                .adminEmail(decryptString(installSalon.getAdminEmail()))
+                .adminName(decryptStringSalt(installSalon.getAdminName()))
+                .adminPhone(decryptStringSalt(installSalon.getAdminPhone()))
+                .adminEmail(decryptStringSalt(installSalon.getAdminEmail()))
                 .adminRole(AdminRole.MASTER)
                 .adminType("SYSTEM")
                 .lastDate(LocalDateTime.parse("2000-01-29T00:00:00"))
