@@ -1,29 +1,24 @@
 <template>
-  <div>
-    MainPage
-  </div>
-  <div class="mt-10">
-    <Button @click="logout">LogOut</Button>
+  <div class="flex">
+    <MainSide></MainSide>
+    <div class="w-full">
+      <MainHeader></MainHeader>
+      <perfect-scrollbar class="overflow-hidden w-full salon-contents flex flex-col justify-between items-stretch bg-gray-50" id="salon-hair">
+        <main class="px-8 py-10">
+          <router-view></router-view>
+        </main>
+      </perfect-scrollbar>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { useUserStore } from '@/stores/userStore';
-import { useRouter } from 'vue-router';
-import { Button } from 'primevue';
-
-const userStore = useUserStore()
-const router = useRouter()
-const logout = () => {
-  userStore.setUserLogout()
-  router.push({ name: 'IndexPage' }).catch(() => {
-    console.log('error')
-  })
-  console.log(userStore.getUserRole)
-  console.log(userStore.getCurrentUser)
-}
+import MainSide from '@/layouts/MainSide.vue';
+import MainHeader from '@/layouts/MainHeader.vue';
 </script>
 
 <style lang="scss" scoped>
-
+.salon-contents {
+  height: calc(100vh - 72px);
+}
 </style>

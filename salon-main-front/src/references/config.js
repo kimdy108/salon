@@ -13,6 +13,7 @@ export const emptyUUID = '00000000-0000-0000-0000-000000000000'
 export const divisionChar = '🅂🄰🄻🄾🄽'
 export const divisionCharSub = '🄷🄰🄸🅁' // 🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉
 export const defineAuthKey = 'BKroUrRPzJokrDeFfkkBQnVEeQshnQLz'
+export const masterAuthKey = '0xD3D596Ed60Ba5B424eF0D655cD1e237eB0bcd2cD'
 
 export const idReg        = /^[A-Za-z0-9]{5,20}$/
 export const nameReg      = /^[가-힣a-zA-Z0-9. ()<>-]{2,20}$/

@@ -39,7 +39,7 @@ public class AuthenticationService {
         String companyNumber = decryptStringSalt(adminLogin.getCompanyNumber());
         Long companySeq = 0L;
 
-        if (!companyNumber.equals("0")) {
+        if (!companyNumber.equals(MASTER_AUTH_KEY)) {
             SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyNumber);
             if (salonCompany == null) throw new UsernameNotFoundException("authFail");
             companySeq = salonCompany.getSeq();

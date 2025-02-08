@@ -21,7 +21,8 @@
     "tailwindcss-primeui": "^0.4.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
-    "vue-sweetalert2": "^5.0.11"
+    "vue-sweetalert2": "^5.0.11",
+    "vue3-perfect-scrollbar": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

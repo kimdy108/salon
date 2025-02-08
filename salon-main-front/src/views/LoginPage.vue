@@ -26,7 +26,7 @@ import { decryptString, encryptStringSalt } from "@/utils/common";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { divisionChar } from "@/references/config";
+import { divisionChar, masterAuthKey } from "@/references/config";
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -57,7 +57,7 @@ const userLogin = () => {
 
 const userLoginAction = async () => {
   const reqData = {
-    companyNumber: isMaster.value ? encryptStringSalt('0') : encryptStringSalt(companyNumber.value),
+    companyNumber: isMaster.value ? encryptStringSalt(masterAuthKey) : encryptStringSalt(companyNumber.value),
     userID: encryptStringSalt(userID.value),
     userPassword: encryptStringSalt(userPassword.value)
   }
@@ -80,8 +80,6 @@ const userLoginAction = async () => {
     router.push({ name: 'IndexPage' }).catch(() => {
       console.log('indexpage')
     })
-    console.log(userStore.getUserRole)
-    console.log(userStore.getCurrentUser)
   } else {
     console.log('error: ', loginResult)
     AlertService.normalAlertAction('로그인에 실패했습니다.', '로그인실패', '확인', 'error')

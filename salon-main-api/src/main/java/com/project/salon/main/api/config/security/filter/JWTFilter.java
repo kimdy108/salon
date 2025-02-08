@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.project.salon.main.api.utils.Common.*;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
@@ -27,7 +29,7 @@ public class JWTFilter extends OncePerRequestFilter {
             throw new AccessDeniedException("noToken");
         }
 
-        String token = authorization.split(" ")[1];
+        String token = decryptStringSalt(authorization.split(" ")[1]);
 
         if (jwtUtil.isExpired(token)) {
             throw new AccountExpiredException("expiredToken");

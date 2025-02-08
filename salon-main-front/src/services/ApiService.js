@@ -8,7 +8,7 @@ axios.interceptors.request.use(async function (config) {
   const userStore = useUserStore()
 
   if(userStore.getCurrentUser != null && userStore.getCurrentUser.at != null) {
-      config.headers['Authorization'] = `Bearer ${userStore.getCurrentUser.at}`
+    config.headers['Authorization'] = `Bearer ${userStore.getCurrentUser.at}`
   }
 
   return config;
@@ -57,7 +57,7 @@ const authRefreshRequest = async () => {
   reqObj.method = 'POST'
 
   reqObj.data = {
-    userAccount : encryptStringSalt(decryptStringSalt(userStore.getCurrentUser.uac) + '-' + decryptStringSalt(userStore.getCurrentUser.sgd)),
+    userAccount : encryptStringSalt(decryptStringSalt(userStore.getCurrentUser.uid) + '-' + decryptStringSalt(userStore.getCurrentUser.sgd)),
     refreshToken: encryptStringSalt(userStore.getCurrentUser.rt)
   }
   reqObj.headers = { accept: 'application/json' }

@@ -30,6 +30,7 @@ public class Common {
     public static final Long EMPTY_SEQ = 0L;
 
     public static final String INSTALL_AUTH_KEY = "0x7C141E7bD107fF294788Acd6A9d5a9e334b46E27";
+    public static final String MASTER_AUTH_KEY = "0xD3D596Ed60Ba5B424eF0D655cD1e237eB0bcd2cD";
 
     public static String encryptString(String data) {
         try {
