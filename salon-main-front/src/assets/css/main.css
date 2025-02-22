@@ -114,3 +114,41 @@ input[type='password'] {
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 20000;
 }
+
+.swal2-container {
+  z-index: 10000 !important;
+}
+.swal2-popup {
+  border-radius: 10px !important;
+  width: 500px !important;
+}
+.swal2-title {
+  margin: 0px 0px 10px 0px !important;
+  font-size: 15px;
+  color: #121926 !important;
+}
+.swal2-html-container {
+  padding: 0px;
+  margin: 0px 12spx;
+  font-size: 15px !important;
+  color: #4B5565 !important;
+  font-weight: 400 !important;
+}
+.swal2-actions {
+  width: 100% !important;
+  justify-content: center !important;
+  padding: 10px 30px 8px 30px !important;
+}
+
+.swal2-confirm {
+  outline: none !important;
+  user-select: none !important;  
+}
+.swal2-cancel {
+  outline: none !important;
+  user-select: none !important;  
+}
+
+.swal2-popup.swal2-toast .swal2-icon {
+  width: 5rem !important;
+}

@@ -49,8 +49,8 @@ public class JWTUtil {
                 .claim("userID", userID)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-//                .expiration(new Date(System.currentTimeMillis() + expirationTime)) // 10시간
-                .expiration(new Date(System.currentTimeMillis() + 1000)) // 1초
+                .expiration(new Date(System.currentTimeMillis() + expirationTime)) // 10시간
+//                .expiration(new Date(System.currentTimeMillis() + 1000)) // 1초
                 .signWith(secretKey)
                 .compact();
     }

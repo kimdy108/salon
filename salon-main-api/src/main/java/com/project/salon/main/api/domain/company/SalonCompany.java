@@ -40,20 +40,35 @@ public class SalonCompany extends SalonCommonBase {
     @Column(name = "company_address", length = 100, nullable = false)
     private String companyAddress;
 
-    @Comment("고객사 전화번호")
-    @Column(name = "company_phone", length = 20, nullable = false)
-    private String companyPhone;
+    @Comment("담당자 이름")
+    @Column(name = "manager_name", length = 50, nullable = false)
+    private String managerName;
+
+    @Comment("담당자 전화번호")
+    @Column(name = "manager_phone", length = 20, nullable = false)
+    private String managerPhone;
 
     @Builder
-    public SalonCompany(UUID companyGuid, String companyNumber, String companyName, String companyAddress, String companyPhone, IsYesNo isActive, LocalDateTime insertDate, LocalDateTime updateDate, String descriptionNote) {
+    public SalonCompany(UUID companyGuid, String companyNumber, String companyName, String companyAddress, String managerName, String managerPhone, IsYesNo isActive, LocalDateTime insertDate, LocalDateTime updateDate, String descriptionNote) {
         this.companyGuid = companyGuid;
         this.companyNumber = companyNumber;
         this.companyName = companyName;
         this.companyAddress = companyAddress;
-        this.companyPhone = companyPhone;
+        this.managerName = managerName;
+        this.managerPhone = managerPhone;
 
         this.setIsActive(isActive);
         this.setInsertDate(insertDate);
+        this.setUpdateDate(updateDate);
+        this.setDescriptionNote(descriptionNote);
+    }
+
+    public void update(String companyName, String companyAddress, String managerName, String managerPhone, LocalDateTime updateDate, String descriptionNote) {
+        this.companyName = companyName;
+        this.companyAddress = companyAddress;
+        this.managerName = managerName;
+        this.managerPhone = managerPhone;
+
         this.setUpdateDate(updateDate);
         this.setDescriptionNote(descriptionNote);
     }
