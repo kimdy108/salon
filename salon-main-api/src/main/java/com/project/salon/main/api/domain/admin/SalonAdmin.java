@@ -89,4 +89,14 @@ public class SalonAdmin extends SalonCommonBase {
         this.setUpdateDate(updateDate);
         this.setDescriptionNote(descriptionNote);
     }
+
+    public void update(String adminName, String adminPhone, String adminEmail, AdminRole adminRole, LocalDateTime updateDate, String descriptionNote) {
+        this.adminName = adminName;
+        this.adminPhone = adminPhone;
+        this.adminEmail = adminEmail;
+        this.adminRole = adminRole;
+
+        this.setUpdateDate(updateDate);
+        this.setDescriptionNote(descriptionNote);
+    }
 }

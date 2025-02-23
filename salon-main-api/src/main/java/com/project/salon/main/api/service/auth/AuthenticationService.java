@@ -1,13 +1,13 @@
 package com.project.salon.main.api.service.auth;
 
 import com.project.salon.main.api.domain.admin.SalonAdmin;
-import com.project.salon.main.api.domain.company.SalonCompany;
+import com.project.salon.main.api.domain.manage.SalonCompany;
 import com.project.salon.main.api.dto.admin.AdminAuth;
 import com.project.salon.main.api.dto.admin.AdminLogin;
 import com.project.salon.main.api.dto.admin.AdminRefresh;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
-import com.project.salon.main.api.repository.company.SalonCompanyRepository;
+import com.project.salon.main.api.repository.manage.SalonCompanyRepository;
 import com.project.salon.main.api.service.component.RedisService;
 import com.project.salon.main.api.utils.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;

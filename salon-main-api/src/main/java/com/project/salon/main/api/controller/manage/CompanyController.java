@@ -39,11 +39,6 @@ public class CompanyController {
         return ResponseMsg.successResponse("success");
     }
 
-    @GetMapping("/info/{companyGuid}")
-    public ResponseEntity<ResponseMsg> companyInfo(@PathVariable String companyGuid) {
-        return ResponseMsg.successResponse(companyService.getCompanyInfo(companyGuid));
-    }
-
     @GetMapping("/list/page")
     public ResponseEntity<ResponseMsg> companyListPage(
             @RequestParam String searchType,
@@ -52,5 +47,15 @@ public class CompanyController {
             @RequestParam int limit
     ) {
         return ResponseMsg.successResponse(companyService.companyListPage(searchType, searchValue, offset, limit));
+    }
+
+    @GetMapping("/info/{companyGuid}")
+    public ResponseEntity<ResponseMsg> companyInfo(@PathVariable String companyGuid) {
+        return ResponseMsg.successResponse(companyService.getCompanyInfo(companyGuid));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ResponseMsg> companyList() {
+        return ResponseMsg.successResponse(companyService.getCompanyListAll());
     }
 }

@@ -1,10 +1,10 @@
-package com.project.salon.main.api.repository.company;
+package com.project.salon.main.api.repository.manage;
 
-import com.project.salon.main.api.domain.company.QSalonCompany;
-import com.project.salon.main.api.domain.company.SalonCompany;
-import com.project.salon.main.api.dto.constant.common.IsYesNo;
+import com.project.salon.main.api.domain.manage.QSalonCompany;
+import com.project.salon.main.api.domain.manage.SalonCompany;
 import com.project.salon.main.api.dto.manage.company.CompanyInfo;
 import com.project.salon.main.api.dto.manage.company.CompanyList;
+import com.project.salon.main.api.dto.manage.company.CompanyListAll;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -17,7 +17,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -83,6 +82,19 @@ public class SalonCompanyRepositoryImpl extends QuerydslRepositorySupport {
                 .from(qSalonCompany)
                 .where(bb)
                 .fetchOne();
+    }
+
+    public List<CompanyListAll> findCompanyListAll() {
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        CompanyListAll.class,
+                        qSalonCompany.seq.as("companySeq"),
+                        qSalonCompany.companyGuid.as("companyGuid"),
+                        qSalonCompany.companyName.as("companyName"),
+                        qSalonCompany.managerName.as("managerName")
+                ))
+                .from(qSalonCompany)
+                .fetch();
     }
 
     private BooleanExpression eqCompanyName(String searchType, String searchValue) {

@@ -71,10 +71,10 @@ const fields = computed(() => {
     { idx: 3, name: "고객사", id: 'companyName', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
     { idx: 4, name: "담당자 이름", id: 'managerName', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
     { idx: 5, name: "담당자 연락처", id: 'managerPhone', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
-    { idx: 7, name: "수정일", id: 'updateDate', type: 'dateTime', classes: 'text-center', style: '', clickType: '', target: '' },
-    { idx: 8, name: "등록일", id: 'insertDate', type: 'dateTime', classes: 'text-center', style: '', clickType: '', target: '' },
-    { idx: 10, name: "", id: '', type: 'update', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
-    { idx: 10, name: "", id: '', type: 'delete', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
+    { idx: 6, name: "수정일", id: 'updateDate', type: 'dateTime', classes: 'text-center', style: '', clickType: '', target: '' },
+    { idx: 7, name: "등록일", id: 'insertDate', type: 'dateTime', classes: 'text-center', style: '', clickType: '', target: '' },
+    { idx: 8, name: "", id: '', type: 'update', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
+    { idx: 9, name: "", id: '', type: 'delete', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
   ]
 })
 const contents = ref([])

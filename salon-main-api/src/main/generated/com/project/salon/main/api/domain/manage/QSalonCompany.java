@@ -1,4 +1,4 @@
-package com.project.salon.main.api.domain.company;
+package com.project.salon.main.api.domain.manage;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QSalonCompany extends EntityPathBase<SalonCompany> {
 
-    private static final long serialVersionUID = 2022083301L;
+    private static final long serialVersionUID = -1042665067L;
 
     public static final QSalonCompany salonCompany = new QSalonCompany("salonCompany");
 

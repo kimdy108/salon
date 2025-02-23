@@ -28,6 +28,9 @@ app.use(VueSweetalert2)
 app.use(PrimeVue, { 
   theme: {
     preset: Aura,
+    options: {
+      darkModeSelector: false || 'none',
+    }
   }
 })
 app.config.globalProperties.$_dayjs = dayjs

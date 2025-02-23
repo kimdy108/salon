@@ -32,7 +32,7 @@ const getPresetExt = () => {
     semantic: {
       primary: baseColor.palette,
     }
-  }
+  };
 }
 
 </script>

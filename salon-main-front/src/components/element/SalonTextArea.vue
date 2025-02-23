@@ -1,11 +1,11 @@
 <template>
   <div class="w-full text-left mb-3">
     <div class="pl-1">
-      <span class="text-base text-gray-700 dark:text-gray-50">{{ inputTitle }}</span> <span v-if="isRequire" class="text-base mx-1 font-bold text-warning-500">*</span>
+      <span class="text-base text-gray-700">{{ inputTitle }}</span> <span v-if="isRequire" class="text-base mx-1 font-bold text-warning-500">*</span>
     </div>
     <div class="mt-3">
       <textarea 
-        class="w-full border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-50 placeholder-gray-300 py-3 px-5 shadow-sm focus:outline-none focus:shadow-outline" 
+        class="w-full border border-gray-300 rounded-lg bg-white placeholder-gray-300 py-3 px-5 shadow-sm focus:outline-none focus:shadow-outline" 
         :placeholder="inputPlaceholder" 
         v-model="inputValue"
         :disabled="isDisabled"

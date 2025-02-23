@@ -1,4 +1,4 @@
-package com.project.salon.main.api.domain.company;
+package com.project.salon.main.api.domain.manage;
 
 import com.project.salon.main.api.domain.common.SalonCommonBase;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import org.springframework.web.bind.annotation.CookieValue;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

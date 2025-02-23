@@ -1,6 +1,6 @@
-package com.project.salon.main.api.repository.company;
+package com.project.salon.main.api.repository.manage;
 
-import com.project.salon.main.api.domain.company.SalonCompany;
+import com.project.salon.main.api.domain.manage.SalonCompany;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
