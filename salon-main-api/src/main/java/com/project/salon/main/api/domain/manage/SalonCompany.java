@@ -23,7 +23,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SalonCompany extends SalonCommonBase {
-    @Comment("고객사 UUID")
+    @Comment("고객사 GUID")
     @Column(name = "company_guid", unique = true, length = 50, updatable = false, nullable = false)
     private UUID companyGuid;
 

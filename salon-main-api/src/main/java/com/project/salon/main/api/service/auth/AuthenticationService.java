@@ -2,12 +2,14 @@ package com.project.salon.main.api.service.auth;
 
 import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.manage.SalonCompany;
+import com.project.salon.main.api.domain.report.SalonLoginLog;
 import com.project.salon.main.api.dto.admin.AdminAuth;
 import com.project.salon.main.api.dto.admin.AdminLogin;
 import com.project.salon.main.api.dto.admin.AdminRefresh;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.manage.SalonCompanyRepository;
+import com.project.salon.main.api.repository.report.SalonLoginLogRepository;
 import com.project.salon.main.api.service.component.RedisService;
 import com.project.salon.main.api.utils.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class AuthenticationService {
 
     private final SalonAdminRepository salonAdminRepository;
     private final SalonCompanyRepository salonCompanyRepository;
+    private final SalonLoginLogRepository salonLoginLogRepository;
 
     public AdminAuth login (AdminLogin adminLogin) {
         String adminID = decryptStringSalt(adminLogin.getUserID());
@@ -41,17 +44,57 @@ public class AuthenticationService {
 
         if (!companyNumber.equals(MASTER_AUTH_KEY)) {
             SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyNumber);
-            if (salonCompany == null) throw new UsernameNotFoundException("authFail");
+            if (salonCompany == null) {
+                salonLoginLogRepository.save(SalonLoginLog.builder()
+                        .loginID(adminID)
+                        .loginPassword(adminPassword)
+                        .loginResult("noCompany")
+                        .userSeq(0L)
+                        .userGuid(EMPTY_UUID)
+                        .insertDate(LocalDateTime.now())
+                        .build());
+                throw new UsernameNotFoundException("authFail");
+            }
             companySeq = salonCompany.getSeq();
         }
 
         SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminIDAndCompanySeq(adminID, companySeq);
-        if (salonAdmin == null) throw new UsernameNotFoundException("authFail");
-        if (IsYesNo.NO.equals(salonAdmin.getIsActive())) throw new UsernameNotFoundException("authFail");
-        if (!passwordEncoder.matches(adminPassword, salonAdmin.getAdminPassword())) throw new UsernameNotFoundException("authFail");
+        if (salonAdmin == null) {
+            salonLoginLogRepository.save(SalonLoginLog.builder()
+                    .loginID(adminID)
+                    .loginPassword(adminPassword)
+                    .loginResult("noUser")
+                    .userSeq(0L)
+                    .userGuid(EMPTY_UUID)
+                    .insertDate(LocalDateTime.now())
+                    .build());
+            throw new UsernameNotFoundException("authFail");
+        }
+        if (IsYesNo.NO.equals(salonAdmin.getIsActive())) {
+            salonLoginLogRepository.save(SalonLoginLog.builder()
+                    .loginID(adminID)
+                    .loginPassword(adminPassword)
+                    .loginResult("blockUser")
+                    .userSeq(0L)
+                    .userGuid(EMPTY_UUID)
+                    .insertDate(LocalDateTime.now())
+                    .build());
+            throw new UsernameNotFoundException("authFail");
+        }
+        if (!passwordEncoder.matches(adminPassword, salonAdmin.getAdminPassword())) {
+            salonLoginLogRepository.save(SalonLoginLog.builder()
+                    .loginID(adminID)
+                    .loginPassword(adminPassword)
+                    .loginResult("wrongPassword")
+                    .userSeq(0L)
+                    .userGuid(EMPTY_UUID)
+                    .insertDate(LocalDateTime.now())
+                    .build());
+            throw new UsernameNotFoundException("authFail");
+        }
 
-        String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminRole());
-        String refreshToken = jwtUtil.createRefreshToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminRole());
+        String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminGuid(), salonAdmin.getAdminRole());
+        String refreshToken = jwtUtil.createRefreshToken(salonAdmin.getAdminID());
 
         String accessTokenEnc = encryptStringSalt(accessToken);
         String refreshTokenEnc = encryptStringSalt(refreshToken);
@@ -61,6 +104,17 @@ public class AuthenticationService {
         redisService.setValues(salonAdmin.getAdminID() + "-" + sessionGuid, refreshTokenEnc);
 
         salonAdminRepository.updateLastDateByAdminGuid(salonAdmin.getAdminGuid(), LocalDateTime.now());
+
+        salonLoginLogRepository.save(SalonLoginLog.builder()
+                .loginID(adminID)
+                .loginPassword("")
+                .loginResult("success")
+                .userSeq(salonAdmin.getSeq())
+                .userGuid(salonAdmin.getAdminGuid())
+                .insertDate(LocalDateTime.now())
+                .build());
+
+        System.out.println("decodeAccessToken : " + jwtUtil.decodeAccessToken("Bearer " + accessTokenEnc));
 
         return AdminAuth.builder()
                 .accessToken(accessTokenEnc)
@@ -85,7 +139,7 @@ public class AuthenticationService {
         SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminID(userID);
         if (salonAdmin == null) throw new UsernameNotFoundException("authFail");
 
-        String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminRole());
+        String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminGuid(), salonAdmin.getAdminRole());
 
         return encryptStringSalt(accessToken);
     }

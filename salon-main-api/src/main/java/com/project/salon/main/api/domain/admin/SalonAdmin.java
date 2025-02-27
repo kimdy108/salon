@@ -24,7 +24,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SalonAdmin extends SalonCommonBase {
-    @Comment("사용자 UUID")
+    @Comment("사용자 GUID")
     @Column(name = "admin_guid", unique = true, length = 50, updatable = false, nullable = false)
     private UUID adminGuid;
 
@@ -36,7 +36,7 @@ public class SalonAdmin extends SalonCommonBase {
     @Column(name = "admin_password", length = 100, nullable = false)
     private String adminPassword;
 
-    @Comment("고객사 UUID")
+    @Comment("고객사 GUID")
     @Column(name = "company_guid", length = 50, nullable = false)
     private UUID companyGuid;
 

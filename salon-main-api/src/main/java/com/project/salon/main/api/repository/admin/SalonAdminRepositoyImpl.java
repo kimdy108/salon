@@ -4,6 +4,7 @@ import com.project.salon.main.api.domain.admin.QSalonAdmin;
 import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
 import com.project.salon.main.api.dto.manage.user.UserList;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -30,6 +31,9 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
     QSalonAdmin qSalonAdmin = QSalonAdmin.salonAdmin;
 
     public Page<UserList> findUserListPage(String searchType, String searchValue, Long offset, int limit, Pageable pageable) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonAdmin.adminType.eq("NORMAL"));
+
         OrderSpecifier<?> sortedColumn = qSalonAdmin.seq.desc();
 
         Long setOffset = offset * limit;
@@ -48,7 +52,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                 ))
                 .from(qSalonAdmin)
                 .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
-                .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue))
+                .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), bb)
                 .orderBy(sortedColumn)
                 .limit(limit)
                 .offset(setOffset)
