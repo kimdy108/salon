@@ -25,8 +25,11 @@ public class CompanyService {
 
     @Transactional
     public void companyRegist(CompanyRegist companyRegist) {
-        SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyRegist.getCompanyNumber());
-        if (salonCompany != null) throw new RuntimeException("existCompany");
+        SalonCompany salonCompanyByCompanyNumber = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyRegist.getCompanyNumber());
+        if (salonCompanyByCompanyNumber != null) throw new RuntimeException("존재하는 사업자번호 입니다.");
+
+        SalonCompany salonCompanyByCompanyName = salonCompanyRepository.findSalonCompanyByCompanyName(companyRegist.getCompanyName());
+        if (salonCompanyByCompanyName != null) throw new RuntimeException("존재하는 고객사입니다.");
 
         LocalDateTime nowDate = LocalDateTime.now();
 
@@ -47,7 +50,7 @@ public class CompanyService {
     @Transactional
     public void companyUpdate(CompanyUpdate companyUpdate) {
         SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyGuid(companyUpdate.getCompanyGuid());
-        if (salonCompany == null) throw new RuntimeException("noCompany");
+        if (salonCompany == null) throw new RuntimeException("존재하지 않는 고객사 입니다.");
 
         salonCompany.update(
                 companyUpdate.getCompanyName(),
@@ -62,7 +65,7 @@ public class CompanyService {
     @Transactional
     public void companyActive(CompanyActive companyActive) {
         SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyGuid(companyActive.getCompanyGuid());
-        if (salonCompany == null) throw new RuntimeException("noCompany");
+        if (salonCompany == null) throw new RuntimeException("존재하지 않는 고객사 입니다.");
 
         salonCompanyRepository.updateSalonCompanyByActiveStatus(companyActive.getCompanyGuid(), companyActive.getIsActive(), LocalDateTime.now());
     }
@@ -70,7 +73,7 @@ public class CompanyService {
     @Transactional
     public void companyDelete(String companyGuid) {
         SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyGuid(UUID.fromString(companyGuid));
-        if (salonCompany == null) throw new RuntimeException("noCompany");
+        if (salonCompany == null) throw new RuntimeException("존재하지 않는 고객사 입니다.");
 
         salonCompanyRepository.delete(salonCompany);
     }

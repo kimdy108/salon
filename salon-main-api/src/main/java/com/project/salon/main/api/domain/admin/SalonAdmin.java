@@ -29,7 +29,7 @@ public class SalonAdmin extends SalonCommonBase {
     private UUID adminGuid;
 
     @Comment("사용자 아이디")
-    @Column(name = "admin_id", unique = true, length = 50, nullable = false)
+    @Column(name = "admin_id", length = 50, nullable = false)
     private String adminID;
 
     @Comment("사용자 비밀번호")
@@ -98,5 +98,11 @@ public class SalonAdmin extends SalonCommonBase {
 
         this.setUpdateDate(updateDate);
         this.setDescriptionNote(descriptionNote);
+    }
+
+    public void updatePassword(String adminPassword, LocalDateTime updateDate) {
+        this.adminPassword = adminPassword;
+
+        this.setUpdateDate(updateDate);
     }
 }

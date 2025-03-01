@@ -14,9 +14,7 @@ import java.util.UUID;
 @Repository
 public interface SalonAdminRepository extends JpaRepository<SalonAdmin, Long> {
     SalonAdmin findSalonAdminByAdminID(String adminID);
-
     SalonAdmin findSalonAdminByAdminIDAndCompanySeq(String adminID, Long companySeq);
-
     SalonAdmin findSalonAdminByAdminGuid(UUID adminGuid);
 
     @Query("update SalonAdmin set lastDate = :lastDate where adminGuid = :adminGuid")

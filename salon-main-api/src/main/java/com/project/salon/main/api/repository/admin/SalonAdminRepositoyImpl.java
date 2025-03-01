@@ -3,6 +3,7 @@ package com.project.salon.main.api.repository.admin;
 import com.project.salon.main.api.domain.admin.QSalonAdmin;
 import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
+import com.project.salon.main.api.dto.manage.user.UserInfo;
 import com.project.salon.main.api.dto.manage.user.UserList;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -17,6 +18,9 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
+
+import static com.project.salon.main.api.utils.Common.EMPTY_UUID;
 
 @Repository
 public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
@@ -30,9 +34,10 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
     QSalonCompany qSalonCompany = QSalonCompany.salonCompany;
     QSalonAdmin qSalonAdmin = QSalonAdmin.salonAdmin;
 
-    public Page<UserList> findUserListPage(String searchType, String searchValue, Long offset, int limit, Pageable pageable) {
+    public Page<UserList> findUserListPage(String searchType, String searchValue, Long offset, int limit, Pageable pageable, UUID companyGuid) {
         BooleanBuilder bb = new BooleanBuilder();
         bb.and(qSalonAdmin.adminType.eq("NORMAL"));
+        if (!companyGuid.equals(EMPTY_UUID)) bb.and(qSalonCompany.companyGuid.eq(companyGuid));
 
         OrderSpecifier<?> sortedColumn = qSalonAdmin.seq.desc();
 
@@ -64,6 +69,28 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                 .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue));
 
         return PageableExecutionUtils.getPage(userLists, pageable, countQuery::fetchOne);
+    }
+
+    public UserInfo findUserInfo(UUID userGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonAdmin.adminGuid.eq(userGuid));
+
+        return  jpaQueryFactory
+                .select(Projections.fields(
+                        UserInfo.class,
+                        qSalonCompany.companyName.as("companyName"),
+                        qSalonAdmin.adminGuid.as("userGuid"),
+                        qSalonAdmin.adminID.as("userID"),
+                        qSalonAdmin.adminName.as("userName"),
+                        qSalonAdmin.adminRole.as("userRole"),
+                        qSalonAdmin.adminPhone.as("userPhone"),
+                        qSalonAdmin.adminEmail.as("userEmail"),
+                        qSalonAdmin.descriptionNote.as("descriptionNote")
+                ))
+                .from(qSalonAdmin)
+                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .where(bb)
+                .fetchOne();
     }
 
     private BooleanExpression eqCompanyName(String searchType, String searchValue) {

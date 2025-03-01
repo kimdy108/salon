@@ -15,6 +15,7 @@ import java.util.UUID;
 public interface SalonCompanyRepository extends JpaRepository<SalonCompany, Long> {
     SalonCompany findSalonCompanyByCompanyGuid(UUID companyGuid);
     SalonCompany findSalonCompanyByCompanyNumber(String companyNumber);
+    SalonCompany findSalonCompanyByCompanyName(String companyName);
 
     @Query("update SalonCompany set isActive = :isActive, updateDate = :updateDate where companyGuid = :companyGuid")
     @Modifying

@@ -88,7 +88,6 @@ public class SalonCompanyRepositoryImpl extends QuerydslRepositorySupport {
         return jpaQueryFactory
                 .select(Projections.fields(
                         CompanyListAll.class,
-                        qSalonCompany.seq.as("companySeq"),
                         qSalonCompany.companyGuid.as("companyGuid"),
                         qSalonCompany.companyName.as("companyName"),
                         qSalonCompany.managerName.as("managerName")

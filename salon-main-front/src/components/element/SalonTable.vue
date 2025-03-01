@@ -52,6 +52,12 @@
                 {{ cItem[fItem.id] ? $_dayjs(cItem[fItem.id]).format("YYYY-MM-DD HH:mm:ss") : '' }}
               </div>
 
+              <div v-else-if="fItem.type === 'password'">
+                <button
+                  class="text-base text-teal-600 bg-teal-200 hover:bg-teal-300 px-2 py-1 rounded-md whitespace-nowrap cursor-pointer hover:shadow-xl"
+                  @click="actionPassword(cItem[keyName])"><i class="pi pi-key mr-2" />비밀번호 수정</button>
+              </div>
+
               <div v-else-if="fItem.type === 'update'">
                 <button
                   class="text-base text-orange-600 bg-orange-200 hover:bg-orange-300 px-2 py-1 rounded-md whitespace-nowrap cursor-pointer hover:shadow-xl"
@@ -120,13 +126,16 @@ import { defineProps, defineEmits, onMounted, ref, watch } from 'vue';
 import { ToggleSwitch } from 'primevue';
 
 const props = defineProps(['totalCount', 'fields','contents','limit','currentPage','keyName','noListText'])
-const emit = defineEmits(['chgCurrentPage','actionUpdate','actionDelete','actionDetail','toggleActiveChange'])
+const emit = defineEmits(['chgCurrentPage','actionPassword','actionUpdate','actionDelete','actionDetail','toggleActiveChange'])
 
 const lastPage = ref(0)
 
 const pageCount = 10
 let pageArray = []
 
+const actionPassword = (guid) => {
+  emit('actionPassword', guid)
+}
 const actionUpdate = (guid) => {
   emit('actionUpdate', guid)
 }
@@ -183,7 +192,3 @@ watch(() => props.currentPage, (newVal) => {
 })
 
 </script>
-
-<style lang="scss" scoped>
-
-</style>

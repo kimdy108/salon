@@ -114,8 +114,6 @@ public class AuthenticationService {
                 .insertDate(LocalDateTime.now())
                 .build());
 
-        System.out.println("decodeAccessToken : " + jwtUtil.decodeAccessToken("Bearer " + accessTokenEnc));
-
         return AdminAuth.builder()
                 .accessToken(accessTokenEnc)
                 .refreshToken(refreshTokenEnc)

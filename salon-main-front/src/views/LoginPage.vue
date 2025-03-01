@@ -82,7 +82,7 @@ const userLoginAction = async () => {
     })
   } else {
     console.log('error: ', loginResult)
-    AlertService.normalAlertAction('로그인에 실패했습니다.', '로그인실패', '확인', 'error')
+    AlertService.normalAlertAction('아이디 혹은 비밀번호를 확인해주세요.', '로그인실패', '확인', 'error')
   }
 }
 </script>

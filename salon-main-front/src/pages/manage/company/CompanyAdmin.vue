@@ -152,7 +152,7 @@ const companyActive = async (guid, value) => {
     data: reqData
   })
   if (!activeResult.retStatus) {
-    AlertService.normalAlertAction('수정에 실패했습니다.', '그룹관리', '확인', 'error')
+    AlertService.normalAlertAction(activeResult.retData, '고객사관리', '확인', 'error')
   }
 }
 
@@ -164,10 +164,10 @@ const companyDeleteAction = async (guid) => {
     url: `/main/company/delete/${guid}`
   })
   if (deleteResult.retStatus) {
-    AlertService.normalAlertAction('삭제 했습니다.', '사용자관리', '확인', 'success')
+    AlertService.normalAlertAction('삭제 했습니다.', '고객사관리', '확인', 'success')
     getCompanyList()
   }
-  else AlertService.normalAlertAction('삭제에 실패했습니다.', '사용자관리', '확인', 'error')
+  else AlertService.normalAlertAction(deleteResult.retData, '고객사관리', '확인', 'error')
 }
 
 </script>

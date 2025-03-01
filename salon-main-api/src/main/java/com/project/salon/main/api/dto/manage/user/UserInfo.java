@@ -10,13 +10,13 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegist {
+public class UserInfo {
+    private String companyName;
+    private UUID userGuid;
     private String userID;
-    private String userPassword;
-    private UUID companyGuid;
     private String userName;
+    private AdminRole userRole;
     private String userPhone;
     private String userEmail;
-    private AdminRole userRole;
     private String descriptionNote;
 }

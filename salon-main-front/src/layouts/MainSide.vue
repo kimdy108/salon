@@ -16,21 +16,17 @@
               <div
                 v-for="childItem in item.child"
                 :key="childItem.id"
-                class="w-5/6 flex items-start p-3 rounded-lg transition-all duration-300 ease-in-out cursor-pointer"
-                :class="[ 
-                route.path === childItem.path 
-                  ? 'bg-sky-200' 
-                  : 'hover:bg-gray-100' 
-                ]"
-                @click="goMenu(childItem)"
+                class="w-5/6"
               > 
                 <div
+                class="flex items-start p-3 rounded-lg transition-all duration-300 ease-in-out cursor-pointer"
                 :class="[ 
                 route.path === childItem.path 
-                  ? 'text-sky-600' 
-                  : 'text-gray-600' 
+                  ? 'text-sky-600 bg-sky-200' 
+                  : 'text-gray-600 hover:bg-gray-100' 
                 ]"
                 v-if="isShowMenu(childItem.role)"
+                @click="goMenu(childItem)"
                 >
                   <i :class="['pi', childItem.icon, 'text-xl']"></i>
                   <span>{{ childItem.label }}</span>
@@ -65,12 +61,12 @@ const isShowMenu = (roleList) => {
 }
 
 const dashBoardItems = [
-  { id: '6433015e-8aad-4a27-8b65-f2d577eba5ef', path: '/salon/dashboard/company', label: '고객사 대시보드', name: 'CompanyDashboard', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '6433015e-8aad-4a27-8b65-f2d577eba5ef', path: '/salon/dashboard/company', label: '고객사 대시보드', name: 'CompanyDashboard', role: ['MASTER'] },
   { id: 'c8f136b1-e63d-49f0-83e4-b5dcfc191e16', path: '/salon/dashboard/schedule', label: '스케줄 대시보드', name: 'ScheduleDashboard', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] }
 ]
 
 const manageItem = [
-  { id: '5242b009-d22c-440f-ac6d-4e24a11311dc', path: '/salon/manage/company', label: '고객사 관리', name: 'CompanyAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '5242b009-d22c-440f-ac6d-4e24a11311dc', path: '/salon/manage/company', label: '고객사 관리', name: 'CompanyAdmin', role: ['MASTER'] },
   { id: '151fea10-9564-4508-bb1a-917f51d43ee8', path: '/salon/manage/user', label: '사용자 관리', name: 'UserAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
 ]
 
@@ -84,7 +80,7 @@ const settingItem = [
 ]
 
 const reportItem = [
-  { id: '5adbc1ae-fb8a-4609-b87b-4c6566dce054', path: '/salon/report/audit', label: '감사 로그', name: 'AuditAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '5adbc1ae-fb8a-4609-b87b-4c6566dce054', path: '/salon/report/audit', label: '감사 로그', name: 'AuditAdmin', role: ['MASTER'] },
   { id: '730a33e8-4f06-4759-b6a9-0ee2ceaaebc6', path: '/salon/report/login', label: '로그인 로그', name: 'LoginAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
 ]
 

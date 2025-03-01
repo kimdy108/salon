@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompanyListAll {
-    private Long companySeq;
-    private String companyGuid;
+    private UUID companyGuid;
     private String companyName;
     private String managerName;
 }

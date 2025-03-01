@@ -102,7 +102,7 @@ const getCompanyInfo = async () => {
     managerName.value = companyResult.retData.managerName
     managerPhone.value = companyResult.retData.managerPhone
     descriptionNote.value = companyResult.retData.descriptionNote
-  } else AlertService.normalAlertAction('조회 실패했습니다.', '고객사관리', '확인', 'error')
+  } else AlertService.normalAlertAction(companyResult.retData, '고객사관리', '확인', 'error')
 }
 
 const companyUpdateAction = async () => {
@@ -125,7 +125,7 @@ const companyUpdateAction = async () => {
     AlertService.normalAlertAction('수정 했습니다.', '고객사관리', '확인', 'success')
     closeUpdateModal()
   }
-  else AlertService.normalAlertAction('수정에 실패했습니다.', '고객사관리', '확인', 'error')
+  else AlertService.normalAlertAction(updateResult.retData, '고객사관리', '확인', 'error')
 }
 
 watch(() => props.showModal, (newVal) => {

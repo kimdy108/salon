@@ -110,7 +110,7 @@ const companyRegistAction = async () => {
     AlertService.normalAlertAction('등록 했습니다.', '고객사관리', '확인', 'success')
     closeRegistModal()
   }
-  else AlertService.normalAlertAction('등록에 실패했습니다.', '고객사관리', '확인', 'error')
+  else AlertService.normalAlertAction(registResult.retData, '고객사관리', '확인', 'error')
 }
 
 watch(() => props.showModal, (newVal) => {

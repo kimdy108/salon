@@ -21,3 +21,10 @@ export const phoneReg         = /^01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})$/
 export const emailReg         = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/
 export const passwdReg        = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()])[A-Za-z\d~!@#$%^&*()]{8,}$/
 export const companyNumberReg = /^[0-9]{10}$/
+
+export const userRoleList = [
+    { key: 0, name: '최고관리자', value: 'MASTER' },
+    { key: 1, name: '관리자', value: 'ADMIN' },
+    { key: 2, name: '매니저', value: 'MANAGER' },
+    { key: 3, name: '운영자', value: 'MEMBER' },
+]
