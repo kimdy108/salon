@@ -1,12 +1,12 @@
-package com.project.salon.main.api.service.setting;
+package com.project.salon.main.api.service.system;
 
 import com.project.salon.main.api.domain.admin.SalonAdmin;
-import com.project.salon.main.api.domain.setting.SalonSetting;
+import com.project.salon.main.api.domain.system.SalonSetting;
 import com.project.salon.main.api.dto.constant.admin.AdminRole;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.dto.system.InstallSalon;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
-import com.project.salon.main.api.repository.setting.SalonSettingRepository;
+import com.project.salon.main.api.repository.system.SalonSettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

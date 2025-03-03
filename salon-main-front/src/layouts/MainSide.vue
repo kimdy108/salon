@@ -76,12 +76,12 @@ const scheduleItem = [
 ]
 
 const settingItem = [
-  { id: 'ebf38c16-e4a6-4b91-a2fe-b2be07376992', path: '/salon/setting/style', label: '스타일 리스트', name: 'StyleAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: 'ebf38c16-e4a6-4b91-a2fe-b2be07376992', path: '/salon/setting/style', label: '스타일', name: 'StyleAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
 ]
 
 const reportItem = [
-  { id: '5adbc1ae-fb8a-4609-b87b-4c6566dce054', path: '/salon/report/audit', label: '감사 로그', name: 'AuditAdmin', role: ['MASTER'] },
-  { id: '730a33e8-4f06-4759-b6a9-0ee2ceaaebc6', path: '/salon/report/login', label: '로그인 로그', name: 'LoginAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '5adbc1ae-fb8a-4609-b87b-4c6566dce054', path: '/salon/report/audit', label: '감사 로그', name: 'AuditLog', role: ['MASTER'] },
+  { id: '730a33e8-4f06-4759-b6a9-0ee2ceaaebc6', path: '/salon/report/login', label: '로그인 로그', name: 'LoginLog', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
 ]
 
 const navItems = [

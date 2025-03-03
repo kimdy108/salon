@@ -112,7 +112,7 @@ const getUserInfo = async () => {
   const infoResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'GET',
-    url: `/main/user/info/${props.updateGuid}`
+    url: `/main/manage/user/info/${props.updateGuid}`
   })
   if (infoResult.retStatus) {
     companyName.value = infoResult.retData.companyName
@@ -139,7 +139,7 @@ const userUpdateAction = async () => {
   const updateResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'PUT',
-    url: '/main/user/update',
+    url: '/main/manage/user/update',
     data: reqData
   })
   if (updateResult.retStatus) {

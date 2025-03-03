@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,24 +27,29 @@ public class AuditService {
 
     public void auditRegist(AuditLogRegist auditLogRegist) {
         ObjectMapper objectMapper = new ObjectMapper();
+        LocalDateTime nowDate = LocalDateTime.now();
 
         try {
             salonAuditLogRepository.save(SalonAuditLog.builder()
+                    .auditGuid(UUID.randomUUID())
                     .controllerType(auditLogRegist.getControllerType())
                     .controllerCategory(auditLogRegist.getControllerCategory())
-                    .userGuid(UUID.fromString(String.valueOf(jwtUtil.decodeAccessToken(auditLogRegist.getAccessToken()).get("userGuid"))))
+                    .adminGuid(UUID.fromString(String.valueOf(jwtUtil.decodeAccessToken(auditLogRegist.getAccessToken()).get("userGuid"))))
                     .auditDetail(objectMapper.writeValueAsString(auditLogRegist.getAuditDetail()))
-                    .insertDate(LocalDateTime.now())
+                    .insertDate(nowDate)
+                    .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
                     .build()
             );
         } catch (Exception ex1) {
             try {
                 salonAuditLogRepository.save(SalonAuditLog.builder()
+                        .auditGuid(UUID.randomUUID())
                         .controllerType(auditLogRegist.getControllerType())
                         .controllerCategory(auditLogRegist.getControllerCategory())
-                        .userGuid(EMPTY_UUID)
+                        .adminGuid(EMPTY_UUID)
                         .auditDetail(objectMapper.writeValueAsString(auditLogRegist.getAuditDetail()))
-                        .insertDate(LocalDateTime.now())
+                        .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
+                        .insertDate(nowDate)
                         .build()
                 );
             } catch (Exception ex2) {

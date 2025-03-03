@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <div class="text-left mb-5">
-      <div class="text-xl font-bold text-gray-900">고객사 관리</div>
+      <div class="text-xl font-bold text-gray-900">사용자 관리</div>
     </div>
     <div class="bg-white rounded-lg shadow-lg flex justify-between items-center px-8 py-4 mb-5">
       <div class="text-left flex justify-start items-center">
@@ -13,7 +13,7 @@
       </div>
       <div class="flex justify-end items-center">
         <button class="min-w-fit flex justify-center items-center text-sky-600 bg-sky-200 hover:bg-sky-300 text-base px-5 py-2 rounded-lg shadow-sm" @click="showRegistModal">
-          <i class="pi pi-upload mr-2" />고객사 등록
+          <i class="pi pi-upload mr-2" />사용자 등록
         </button>
       </div>
     </div>
@@ -25,41 +25,50 @@
         :contents="contents"
         :limit="limit"
         :currentPage="currentPage"
-        keyName="companyGuid"
-        noListText="등록된 고객사가 없습니다."
-        @toggleActiveChange="companyActive"
+        keyName="userGuid"
+        noListText="등록된 사용자가 없습니다."
+        @toggleActiveChange="userActive"
         @chgCurrentPage="chgCurrentPage"
+        @actionPassword="showUpdatePasswordModal"
         @actionUpdate="showUpdateModal"
-        @actionDelete="companyDelete"
+        @actionDelete="userDelete"
       ></SalonTable>
     </div>
 
-    <CompanyRegist :showModal="isRegistModal" @closeRegistModal="closeRegistModal" ></CompanyRegist>
-    <CompanyUpdate :showModal="isUpdateModal" :updateGuid="updateGuid" @closeUpdateModal="closeUpdateModal" ></CompanyUpdate>
+    <UserRegist :showModal="isRegistModal" @closeRegistModal="closeRegistModal" ></UserRegist>
+    <UserUpdate :showModal="isUpdateModal" :updateGuid="updateGuid" @closeUpdateModal="closeUpdateModal" ></UserUpdate>
+    <UserUpdatePassword :showModal="isUpdatePasswordModal" :updatePasswordGuid="updatePasswordGuid" @closeUpdatePasswordModal="closeUpdatePasswordModal" ></UserUpdatePassword>
 
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { defineProps, computed, onMounted, ref, watch } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { decryptStringSalt } from '@/utils/common'
 import SalonSearch from '@/components/element/SalonSearch.vue';
 import SalonTable from '@/components/element/SalonTable.vue';
-import AlertService from "@/services/AlertService";
+import AlertService from '@/services/AlertService';
 import ApiService from '@/services/ApiService';
 
-import CompanyRegist from '@/pages/manage/company/CompanyRegist.vue';
-import CompanyUpdate from '@/pages/manage/company/CompanyUpdate.vue';
+import UserRegist from '@/pages/manage/user/UserRegist.vue'
+import UserUpdate from '@/pages/manage/user/UserUpdate.vue'
+import UserUpdatePassword from '@/pages/manage/user/UserUpdatePassword.vue'
 
 import { Select } from 'primevue';
 
 onMounted(() => {
-  getCompanyList()
+  getUserList()
 })
+
+const props = defineProps(['selectedTab'])
+
+const userStore = useUserStore()
 
 const searchCategory = ref('companyName')
 const searchCategoryList = ([
     { name: '고객사명', key: 'companyName' },
-    { name: '담당자이름', key: 'managerName' }
+    { name: '사용자이름', key: 'userName' }
 ])
 const searchValue = ref('')
 
@@ -69,10 +78,12 @@ const fields = computed(() => {
     { idx: 1, name: "No", id: 'seq', type: 'seq', classes: 'text-center', style: 'width:80px', clickType: '', target: '' },
     { idx: 2, name: "활성화", id: 'isActive', type: 'toggleActive', classes: 'text-center', style: 'width:80px', clickType: '', target: '' },
     { idx: 3, name: "고객사", id: 'companyName', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
-    { idx: 4, name: "담당자 이름", id: 'managerName', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
-    { idx: 5, name: "담당자 연락처", id: 'managerPhone', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
+    { idx: 4, name: "아이디", id: 'userID', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
+    { idx: 4, name: "이름", id: 'userName', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
+    { idx: 5, name: "권한", id: 'userRole', type: 'text', classes: 'text-center', style: '', clickType: '', target: '' },
     { idx: 6, name: "수정일", id: 'updateDate', type: 'dateTime', classes: 'text-center', style: '', clickType: '', target: '' },
     { idx: 7, name: "등록일", id: 'insertDate', type: 'dateTime', classes: 'text-center', style: '', clickType: '', target: '' },
+    { idx: 8, name: "", id: '', type: 'password', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
     { idx: 8, name: "", id: '', type: 'update', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
     { idx: 9, name: "", id: '', type: 'delete', classes: 'text-center px-4', style: 'width:60px', clickType: '', target: '' },
   ]
@@ -83,95 +94,120 @@ const limit = 15
 
 const isRegistModal = ref(false)
 const isUpdateModal = ref(false)
+const isUpdatePasswordModal = ref(false)
 const updateGuid = ref('')
+const updatePasswordGuid = ref('')
 
 const showRegistModal = () => {
   isRegistModal.value = true
 }
 const closeRegistModal = () => {
-  getCompanyList()
+  getUserList()
   isRegistModal.value = false
 }
 
 const showUpdateModal = (guid) => {
+  if (decryptStringSalt(userStore.getCurrentUser.ugd) === guid) {
+    AlertService.normalAlertAction('상단의 설정 메뉴를 이용해주세요.', '사용자관리', '확인', 'error')
+    return
+  }
   updateGuid.value = guid
   isUpdateModal.value = true
 }
 const closeUpdateModal = () => {
-  getCompanyList()
+  getUserList()
   isUpdateModal.value = false
 }
 
-const companyDelete = (guid) => {
-  AlertService.confirmAlertAction('삭제하시겠습니까?', '고객사관리', '확인', '취소', 'info', guid, companyDeleteAction)
+const showUpdatePasswordModal = (guid) => {
+  if (decryptStringSalt(userStore.getCurrentUser.ugd) === guid) {
+    AlertService.normalAlertAction('상단의 설정 메뉴를 이용해주세요.', '사용자관리', '확인', 'error')
+    return
+  }
+
+  updatePasswordGuid.value = guid
+  isUpdatePasswordModal.value = true
+}
+const closeUpdatePasswordModal = () => {
+  getUserList()
+  isUpdatePasswordModal.value = false
+}
+
+const userDelete = (guid) => {
+  if (decryptStringSalt(userStore.getCurrentUser.ugd) === guid) {
+    AlertService.normalAlertAction('본인 계정은 삭제할 수 없습니다.', '사용자관리', '확인', 'error')
+    return
+  }
+
+  AlertService.confirmAlertAction('삭제하시겠습니까?', '사용자관리', '확인', '취소', 'info', guid, userDeleteAction)
 }
 
 const searchSubmit = () => {
   currentPage.value = 1
-  getCompanyList()
+  getUserList()
 }
 
 const chgCurrentPage = (num) => {
   currentPage.value = num
-  getCompanyList()
+  getUserList()
 
   let el = document.getElementById('salon-hair')
   el.scrollTo({ top: 0 })
 }
 
-const getCompanyList = async () => {
+const getUserList = async () => {
   const reqHeader = { accept: 'application/json' }
   const reqParams = {
     searchType: searchCategory.value ? searchCategory.value : '',
     searchValue: searchValue.value ? searchValue.value : '',
     limit: limit,
-    offset: currentPage.value - 1
+    offset: currentPage.value - 1,
+    companyGuid: decryptStringSalt(userStore.getCurrentUser.ucg)
   }
-  const companyResult = await ApiService.requestAPI({
+  const userResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'GET',
-    url: `/main/manage/company/list/page`,
+    url: `/main/manage/user/list/page`,
     params: reqParams
   })
-  if (companyResult.retStatus) {
-    contents.value = companyResult.retData.content
-    totalCount.value = companyResult.retData.totalElements
+  if (userResult.retStatus) {
+    contents.value = userResult.retData.content
+    totalCount.value = userResult.retData.totalElements
   }
 }
 
-const companyActive = async (guid, value) => {
+const userActive = async (guid, value) => {
   const reqHeader = { accept: 'application/json' }
   const reqData = {
-    companyGuid: guid,
+    userGuid: guid,
     isActive: value
   }
   const activeResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'PUT',
-    url: `/main/manage/company/active`,
+    url: `/main/manage/user/active`,
     data: reqData
   })
   if (!activeResult.retStatus) {
-    AlertService.normalAlertAction(activeResult.retData, '고객사관리', '확인', 'error')
+    AlertService.normalAlertAction(activeResult.retData, '사용자관리', '확인', 'error')
   }
 }
 
-const companyDeleteAction = async (guid) => {
+const userDeleteAction = async (guid) => {
   const reqHeader = { accept: 'application/json' }
   const deleteResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'DELETE',
-    url: `/main/manage/company/delete/${guid}`
+    url: `/main/manage/user/delete/${guid}`
   })
   if (deleteResult.retStatus) {
-    AlertService.normalAlertAction('삭제 했습니다.', '고객사관리', '확인', 'success')
-    getCompanyList()
+    AlertService.normalAlertAction('삭제 했습니다.', '사용자관리', '확인', 'success')
+    getUserList()
   }
-  else AlertService.normalAlertAction(deleteResult.retData, '고객사관리', '확인', 'error')
+  else AlertService.normalAlertAction(deleteResult.retData, '사용자관리', '확인', 'error')
 }
 
+watch(() => props.selectedTab, (newVal) => {
+  if(newVal == 0) getUserList()
+})
 </script>
-
-<style lang="scss" scoped>
-
-</style>

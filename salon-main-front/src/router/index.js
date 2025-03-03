@@ -28,8 +28,8 @@ const settingChild = [
 ]
 
 const reportChild = [
-  { path: '/salon/report/audit', name: 'AuditAdmin', component: loadSubPage('pages', 'report/audit', 'AuditAdmin'), meta: { id: 'AuditAdmin' } },
-  { path: '/salon/report/login', name: 'LoginAdmin', component: loadSubPage('pages', 'report/login', 'LoginAdmin'), meta: { id: 'LoginAdmin' } },
+  { path: '/salon/report/audit', name: 'AuditLog', component: loadSubPage('pages', 'report/audit', 'AuditLog'), meta: { id: 'AuditLog' } },
+  { path: '/salon/report/login', name: 'LoginLog', component: loadSubPage('pages', 'report/login', 'LoginLog'), meta: { id: 'LoginLog' } },
 ]
 
 const systemChild = [

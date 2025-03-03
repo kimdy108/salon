@@ -1,8 +1,8 @@
-package com.project.salon.main.api.controller.setting;
+package com.project.salon.main.api.controller.system;
 
 import com.project.salon.main.api.dto.common.ResponseMsg;
 import com.project.salon.main.api.dto.system.InstallSalon;
-import com.project.salon.main.api.service.setting.InstallService;
+import com.project.salon.main.api.service.system.InstallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -73,7 +73,7 @@
               <div v-else-if="fItem.type === 'detail'">
                 <button
                   class="text-base text-yellow-600 bg-yellow-200 hover:bg-yellow-300 px-2 py-1 rounded-md whitespace-nowrap cursor-pointer hover:shadow-xl"
-                  @click="actionDetail(cidx)">상세 보기</button>
+                  @click="actionDetail(cidx)"><i class="pi pi-info-circle mr-2" />상세 보기</button>
               </div>
 
               <div v-else v-html="makeTableValue(cItem[fItem.id], fItem.type, fItem.ref)"></div>

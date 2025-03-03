@@ -24,4 +24,8 @@ public class SalonCommonLog {
     @CreationTimestamp
     @Column(name = "insert_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", updatable = false)
     private LocalDateTime insertDate;
+
+    @Comment("등록 Timestamp")
+    @Column(name = "insert_timestamp", length = 20)
+    private Long insertTimestamp;
 }

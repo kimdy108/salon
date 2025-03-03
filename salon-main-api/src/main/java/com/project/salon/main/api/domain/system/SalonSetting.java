@@ -1,4 +1,4 @@
-package com.project.salon.main.api.domain.setting;
+package com.project.salon.main.api.domain.system;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

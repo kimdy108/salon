@@ -103,7 +103,7 @@ const companyRegistAction = async () => {
   const registResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'POST',
-    url: `/main/company/regist`,
+    url: `/main/manage/company/regist`,
     data: reqData
   })
   if (registResult.retStatus) {

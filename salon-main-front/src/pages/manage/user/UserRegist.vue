@@ -141,7 +141,7 @@ const userRegistAction = async () => {
   const registResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'POST',
-    url: '/main/user/regist',
+    url: '/main/manage/user/regist',
     data: reqData
   })
   if (registResult.retStatus) {
@@ -156,7 +156,7 @@ const getCompanyList = async () => {
   const companyListResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'GET',
-    url: '/main/company/list',
+    url: '/main/manage/company/list',
   })
   if (companyListResult.retStatus) {
     companyList.value = companyListResult.retData

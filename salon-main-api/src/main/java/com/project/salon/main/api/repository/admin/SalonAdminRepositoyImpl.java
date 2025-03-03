@@ -37,6 +37,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
     public Page<UserList> findUserListPage(String searchType, String searchValue, Long offset, int limit, Pageable pageable, UUID companyGuid) {
         BooleanBuilder bb = new BooleanBuilder();
         bb.and(qSalonAdmin.adminType.eq("NORMAL"));
+        bb.and(qSalonAdmin.companyGuid.ne(EMPTY_UUID));
         if (!companyGuid.equals(EMPTY_UUID)) bb.and(qSalonCompany.companyGuid.eq(companyGuid));
 
         OrderSpecifier<?> sortedColumn = qSalonAdmin.seq.desc();
@@ -66,7 +67,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(qSalonAdmin.count())
                 .from(qSalonAdmin)
-                .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue));
+                .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), bb);
 
         return PageableExecutionUtils.getPage(userLists, pageable, countQuery::fetchOne);
     }

@@ -76,7 +76,7 @@ const userUpdatePasswordAction = async () => {
   const updatePasswordResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'PUT',
-    url: '/main/user/update/password',
+    url: '/main/manage/user/update/password',
     data: reqData
   })
   if (updatePasswordResult.retStatus) {

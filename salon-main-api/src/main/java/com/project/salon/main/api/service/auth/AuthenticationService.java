@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -41,6 +42,7 @@ public class AuthenticationService {
         String adminPassword = decryptStringSalt(adminLogin.getUserPassword());
         String companyNumber = decryptStringSalt(adminLogin.getCompanyNumber());
         Long companySeq = 0L;
+        LocalDateTime nowDate = LocalDateTime.now();
 
         if (!companyNumber.equals(MASTER_AUTH_KEY)) {
             SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyNumber(companyNumber);
@@ -49,9 +51,10 @@ public class AuthenticationService {
                         .loginID(adminID)
                         .loginPassword(adminPassword)
                         .loginResult("noCompany")
-                        .userSeq(0L)
-                        .userGuid(EMPTY_UUID)
-                        .insertDate(LocalDateTime.now())
+                        .adminSeq(0L)
+                        .adminGuid(EMPTY_UUID)
+                        .insertDate(nowDate)
+                        .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
                         .build());
                 throw new UsernameNotFoundException("authFail");
             }
@@ -64,9 +67,10 @@ public class AuthenticationService {
                     .loginID(adminID)
                     .loginPassword(adminPassword)
                     .loginResult("noUser")
-                    .userSeq(0L)
-                    .userGuid(EMPTY_UUID)
-                    .insertDate(LocalDateTime.now())
+                    .adminSeq(0L)
+                    .adminGuid(EMPTY_UUID)
+                    .insertDate(nowDate)
+                    .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
                     .build());
             throw new UsernameNotFoundException("authFail");
         }
@@ -75,9 +79,10 @@ public class AuthenticationService {
                     .loginID(adminID)
                     .loginPassword(adminPassword)
                     .loginResult("blockUser")
-                    .userSeq(0L)
-                    .userGuid(EMPTY_UUID)
-                    .insertDate(LocalDateTime.now())
+                    .adminSeq(0L)
+                    .adminGuid(EMPTY_UUID)
+                    .insertDate(nowDate)
+                    .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
                     .build());
             throw new UsernameNotFoundException("authFail");
         }
@@ -86,9 +91,10 @@ public class AuthenticationService {
                     .loginID(adminID)
                     .loginPassword(adminPassword)
                     .loginResult("wrongPassword")
-                    .userSeq(0L)
-                    .userGuid(EMPTY_UUID)
-                    .insertDate(LocalDateTime.now())
+                    .adminSeq(0L)
+                    .adminGuid(EMPTY_UUID)
+                    .insertDate(nowDate)
+                    .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
                     .build());
             throw new UsernameNotFoundException("authFail");
         }
@@ -109,9 +115,10 @@ public class AuthenticationService {
                 .loginID(adminID)
                 .loginPassword("")
                 .loginResult("success")
-                .userSeq(salonAdmin.getSeq())
-                .userGuid(salonAdmin.getAdminGuid())
-                .insertDate(LocalDateTime.now())
+                .adminSeq(salonAdmin.getSeq())
+                .adminGuid(salonAdmin.getAdminGuid())
+                .insertDate(nowDate)
+                .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
                 .build());
 
         return AdminAuth.builder()

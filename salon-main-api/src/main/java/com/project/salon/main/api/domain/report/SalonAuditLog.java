@@ -22,6 +22,10 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SalonAuditLog extends SalonCommonLog {
+    @Comment("감사로그 GUID")
+    @Column(name = "audit_guid", length = 50, unique = true, nullable = false)
+    private UUID auditGuid;
+
     @Comment("컨트롤러 타입")
     @Column(name = "controller_type", length = 50)
     private String controllerType;
@@ -31,20 +35,22 @@ public class SalonAuditLog extends SalonCommonLog {
     private String controllerCategory;
 
     @Comment("사용자 GUID")
-    @Column(name = "user_guid", length = 50, nullable = false)
-    private UUID userGuid;
+    @Column(name = "admin_guid", length = 50, nullable = false)
+    private UUID adminGuid;
 
     @Comment("상세")
     @Column(name = "audit_detail", columnDefinition = "TEXT")
     private String auditDetail;
 
     @Builder
-    public SalonAuditLog (String controllerType, String controllerCategory, UUID userGuid, String auditDetail, LocalDateTime insertDate) {
+    public SalonAuditLog (UUID auditGuid, String controllerType, String controllerCategory, UUID adminGuid, String auditDetail, LocalDateTime insertDate, Long insertTimestamp) {
+        this.auditGuid = auditGuid;
         this.controllerType = controllerType;
         this.controllerCategory = controllerCategory;
-        this.userGuid = userGuid;
+        this.adminGuid = adminGuid;
         this.auditDetail = auditDetail;
 
         this.setInsertDate(insertDate);
+        this.setInsertTimestamp(insertTimestamp);
     }
 }

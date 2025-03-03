@@ -21,7 +21,11 @@ public class QSalonAuditLog extends EntityPathBase<SalonAuditLog> {
 
     public final com.project.salon.main.api.domain.common.QSalonCommonLog _super = new com.project.salon.main.api.domain.common.QSalonCommonLog(this);
 
+    public final ComparablePath<java.util.UUID> adminGuid = createComparable("adminGuid", java.util.UUID.class);
+
     public final StringPath auditDetail = createString("auditDetail");
+
+    public final ComparablePath<java.util.UUID> auditGuid = createComparable("auditGuid", java.util.UUID.class);
 
     public final StringPath controllerCategory = createString("controllerCategory");
 
@@ -31,9 +35,10 @@ public class QSalonAuditLog extends EntityPathBase<SalonAuditLog> {
     public final DateTimePath<java.time.LocalDateTime> insertDate = _super.insertDate;
 
     //inherited
-    public final NumberPath<Long> seq = _super.seq;
+    public final NumberPath<Long> insertTimestamp = _super.insertTimestamp;
 
-    public final ComparablePath<java.util.UUID> userGuid = createComparable("userGuid", java.util.UUID.class);
+    //inherited
+    public final NumberPath<Long> seq = _super.seq;
 
     public QSalonAuditLog(String variable) {
         super(SalonAuditLog.class, forVariable(variable));

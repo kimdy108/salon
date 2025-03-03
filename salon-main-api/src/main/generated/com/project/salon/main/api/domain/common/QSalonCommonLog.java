@@ -21,6 +21,8 @@ public class QSalonCommonLog extends EntityPathBase<SalonCommonLog> {
 
     public final DateTimePath<java.time.LocalDateTime> insertDate = createDateTime("insertDate", java.time.LocalDateTime.class);
 
+    public final NumberPath<Long> insertTimestamp = createNumber("insertTimestamp", Long.class);
+
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
     public QSalonCommonLog(String variable) {

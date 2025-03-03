@@ -18,12 +18,14 @@ import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
 
 import dayjs from 'dayjs'
+import JsonViewer from 'vue-json-viewer'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 app.use(PerfectScrollbarPlugin)
+app.component('JsonViewer', JsonViewer)
 app.use(VueSweetalert2)
 app.use(PrimeVue, { 
   theme: {

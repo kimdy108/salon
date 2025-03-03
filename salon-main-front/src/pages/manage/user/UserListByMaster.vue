@@ -1,6 +1,6 @@
 <template>
   <div>
-    LoginLog
+    MasterList
   </div>
 </template>
 

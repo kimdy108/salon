@@ -1,6 +1,6 @@
-package com.project.salon.main.api.repository.setting;
+package com.project.salon.main.api.repository.system;
 
-import com.project.salon.main.api.domain.setting.SalonSetting;
+import com.project.salon.main.api.domain.system.SalonSetting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

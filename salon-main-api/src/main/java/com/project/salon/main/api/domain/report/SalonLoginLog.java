@@ -35,21 +35,22 @@ public class SalonLoginLog extends SalonCommonLog {
     private String loginResult;
 
     @Comment("사용자 SEQ(성공시)")
-    @Column(name = "user_seq", length=20)
-    private Long userSeq;
+    @Column(name = "admin_seq", length=20)
+    private Long adminSeq;
 
     @Comment("사용자 GUID(성공시)")
-    @Column(name = "user_guid", length=50)
-    private UUID userGuid;
+    @Column(name = "admin_guid", length=50)
+    private UUID adminGuid;
 
     @Builder
-    public SalonLoginLog(String loginID, String loginPassword, String loginResult, Long userSeq, UUID userGuid, LocalDateTime insertDate) {
+    public SalonLoginLog(String loginID, String loginPassword, String loginResult, Long adminSeq, UUID adminGuid, LocalDateTime insertDate, Long insertTimestamp) {
         this.loginID = loginID;
         this.loginPassword = loginPassword;
         this.loginResult = loginResult;
-        this.userSeq = userSeq;
-        this.userGuid = userGuid;
+        this.adminSeq = adminSeq;
+        this.adminGuid = adminGuid;
 
         this.setInsertDate(insertDate);
+        this.setInsertTimestamp(insertTimestamp);
     }
 }

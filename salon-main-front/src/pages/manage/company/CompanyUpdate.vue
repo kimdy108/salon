@@ -93,7 +93,7 @@ const getCompanyInfo = async () => {
   const companyResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'GET',
-    url: `/main/company/info/${props.updateGuid}`
+    url: `/main/manage/company/info/${props.updateGuid}`
   })
   if (companyResult.retStatus) {
     companyNumber.value = companyResult.retData.companyNumber
@@ -118,7 +118,7 @@ const companyUpdateAction = async () => {
   const updateResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'PUT',
-    url: `/main/company/update`,
+    url: `/main/manage/company/update`,
     data: reqData
   })
   if (updateResult.retStatus) {
