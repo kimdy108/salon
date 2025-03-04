@@ -76,12 +76,12 @@ public class SalonLoginLogRepositoryImpl extends QuerydslRepositorySupport {
     }
 
     private BooleanExpression eqAdminName(String searchType, String searchValue) {
-        if (!"adminName".equals(searchType) || "".equals(searchValue)) return null;
+        if (!"userName".equals(searchType) || "".equals(searchValue)) return null;
         return qSalonAdmin.adminName.containsIgnoreCase(searchValue);
     }
 
     private BooleanExpression eqAdminID(String searchType, String searchValue) {
-        if (!"actionType".equals(searchType) || "".equals(searchValue)) return null;
+        if (!"userID".equals(searchType) || "".equals(searchValue)) return null;
         return qSalonLoginLog.loginID.containsIgnoreCase(searchValue);
     }
 

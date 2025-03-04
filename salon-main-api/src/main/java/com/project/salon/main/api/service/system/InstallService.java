@@ -35,6 +35,7 @@ public class InstallService {
 
     public void installSalon(InstallSalon installSalon) {
         if (!INSTALL_AUTH_KEY.equals(installSalon.getAuthKey())) throw new RuntimeException("인증키를 확인해주세요.");
+        if (installCheck()) return;
 
         LocalDateTime nowDate = LocalDateTime.now();
 

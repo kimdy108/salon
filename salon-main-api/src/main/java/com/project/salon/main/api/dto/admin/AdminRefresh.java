@@ -5,5 +5,6 @@ import lombok.Getter;
 @Getter
 public class AdminRefresh {
     private String userAccount;
+    private String companyGuid;
     private String refreshToken;
 }

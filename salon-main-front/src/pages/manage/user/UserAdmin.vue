@@ -9,13 +9,13 @@
         <TabPanels>
           <TabPanel value="0">
             <div class="pt-3">
-              <UserListByCompany :selectedTab="selectedTab" ></UserListByCompany>
+              <UserList :selectedTab="selectedTab" ></UserList>
             </div>
           </TabPanel>
 
           <TabPanel value="1">
             <div class="pt-3">
-              <UserListByMaster :selectedTab="selectedTab" ></UserListByMaster>
+              <MasterList :selectedTab="selectedTab" ></MasterList>
             </div>
           </TabPanel>
         </TabPanels>
@@ -23,7 +23,7 @@
     </div>
 
     <div v-else>
-      <UserListByCompany :selectedTab="selectedTab" ></UserListByCompany>
+      <UserList :selectedTab="selectedTab" ></UserList>
     </div>
 
   </div>
@@ -39,8 +39,8 @@ import { Tab } from 'primevue'
 import { TabPanels } from 'primevue'
 import { TabPanel } from 'primevue'
 
-import UserListByCompany from './UserListByCompany.vue'
-import UserListByMaster from './UserListByMaster.vue'
+import UserList from './UserList.vue'
+import MasterList from './MasterList.vue'
 import { decryptStringSalt } from '@/utils/common'
 
 onMounted(() => {

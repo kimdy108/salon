@@ -14,7 +14,7 @@
 
       <div class="w-full px-5">
         
-        <SalonSelect selectTitle="고객사" selectPlaceholder="고객사" :isRequire="true" :options="companyList" optionTitle="companyName" optionSub="managerName" optionValue="companyGuid" v-model:inputValue="companyGuid"></SalonSelect>
+        <SalonSelect v-if="decryptStringSalt(userStore.getUserRole) === 'MASTER'" selectTitle="고객사" selectPlaceholder="고객사" :isRequire="true" :options="companyList" optionTitle="companyName" optionSub="managerName" optionValue="companyGuid" v-model:inputValue="companyGuid"></SalonSelect>
 
         <div class="grid grid-cols-2 gap-6">
           <SalonInput inputTitle="아이디" :isRequire="true" inputType="text" inputPlaceholder="" :isDisabled="false" :isPassword="false" v-model:inputValue="userID" />
@@ -131,7 +131,7 @@ const userRegistAction = async () => {
   const reqData = {
     'userID' : encryptStringSalt(userID.value),
     'userPassword' : encryptStringSalt(userPassword.value),
-    'companyGuid' : companyGuid.value,
+    'companyGuid' : decryptStringSalt(userStore.getUserRole) === 'MASTER' ? companyGuid.value : decryptStringSalt(userStore.getCurrentUser.ucg),
     'userName' : encryptStringSalt(userName.value),
     'userPhone' : encryptStringSalt(userPhone.value),
     'userEmail' : encryptStringSalt(userEmail.value),

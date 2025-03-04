@@ -64,10 +64,10 @@ onMounted(() => {
 
 const userStore = useUserStore()
 
-const searchCategory = ref('adminName')
+const searchCategory = ref('userName')
 const searchCategoryList = ([
-    { name: '사용자이름', key: 'adminName' },
-    { name: '사용자아이디', key: 'adminID' },
+    { name: '사용자이름', key: 'userName' },
+    { name: '사용자아이디', key: 'userID' },
     { name: '고객사이름', key: 'companyName' }
 ])
 const searchValue = ref('')

@@ -65,10 +65,10 @@ onMounted(() => {
   getAuditLogList()
 })
 
-const searchCategory = ref('adminName')
+const searchCategory = ref('userName')
 const searchCategoryList = ([
-    { name: '사용자이름', key: 'adminName' },
-    { name: '사용자ID', key: 'adminID' },
+    { name: '사용자이름', key: 'userName' },
+    { name: '사용자ID', key: 'userID' },
     { name: '고객사이름', key: 'companyName' },
     { name: 'Type', key: 'controllerType' },
     { name: 'Category', key: 'controllerCategory' }

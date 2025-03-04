@@ -58,6 +58,7 @@ const authRefreshRequest = async () => {
 
   reqObj.data = {
     userAccount : encryptStringSalt(decryptStringSalt(userStore.getCurrentUser.uid) + '-' + decryptStringSalt(userStore.getCurrentUser.sgd)),
+    companyGuid : userStore.getCurrentUser.ucg,
     refreshToken: encryptStringSalt(userStore.getCurrentUser.rt)
   }
   reqObj.headers = { accept: 'application/json' }

@@ -134,14 +134,19 @@ public class AuthenticationService {
 
     public String refresh(AdminRefresh adminRefresh) {
         String userAccount = decryptStringSalt(adminRefresh.getUserAccount());
+        UUID companyGuid = UUID.fromString(decryptStringSalt(adminRefresh.getCompanyGuid()));
         String refreshToken = decryptStringSalt(adminRefresh.getRefreshToken());
 
         String redisRefreshToken = redisService.getValues(userAccount);
         if (!redisRefreshToken.equals(refreshToken)) throw new RuntimeException("refreshFail");
 
         String userID = userAccount.split("-")[0];
+        Long companySeq = 0L;
 
-        SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminID(userID);
+        SalonCompany salonCompany = salonCompanyRepository.findSalonCompanyByCompanyGuid(companyGuid);
+        if (salonCompany != null) companySeq = salonCompany.getSeq();
+
+        SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminIDAndCompanySeq(userID, companySeq);
         if (salonAdmin == null) throw new UsernameNotFoundException("authFail");
 
         String accessToken = jwtUtil.createAuthToken(salonAdmin.getAdminName(), salonAdmin.getAdminID(), salonAdmin.getAdminGuid(), salonAdmin.getAdminRole());
