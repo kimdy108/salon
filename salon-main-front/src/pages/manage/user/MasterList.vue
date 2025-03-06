@@ -169,7 +169,6 @@ const getMasterList = async () => {
     params: reqParams
   })
   if (masterResult.retStatus) {
-    console.log(masterResult)
     contents.value = masterResult.retData.content
     totalCount.value = masterResult.retData.totalElements
   }
@@ -207,6 +206,6 @@ const masterDeleteAction = async (guid) => {
 }
 
 watch(() => props.selectedTab, (newVal) => {
-  if(newVal == 0) getMasterList()
+  if(newVal == 1) getMasterList()
 })
 </script>

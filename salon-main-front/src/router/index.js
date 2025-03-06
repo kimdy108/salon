@@ -25,6 +25,7 @@ const scheduleChild = [
 
 const settingChild = [
   { path: '/salon/setting/style', name: 'StyleAdmin', component: loadSubPage('pages', 'setting/style', 'StyleAdmin'), meta: { id: 'StyleAdmin' } },
+  { path: '/salon/setting/system', name: 'SystemAdmin', component: loadSubPage('pages', 'setting/system', 'SystemAdmin'), meta: { id: 'SystemAdmin' } },
 ]
 
 const reportChild = [

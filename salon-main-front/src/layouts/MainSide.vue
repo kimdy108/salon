@@ -77,6 +77,7 @@ const scheduleItem = [
 
 const settingItem = [
   { id: 'ebf38c16-e4a6-4b91-a2fe-b2be07376992', path: '/salon/setting/style', label: '스타일', name: 'StyleAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '4f0f2429-8822-4386-a437-ac8a0aa944a1', path: '/salon/setting/system', label: '시스템설정', name: 'SystemAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
 ]
 
 const reportItem = [
