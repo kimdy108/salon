@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/main/style")
+@RequestMapping("/api/main/setting/style")
 public class StyleController {
     private final AuditService auditService;
     private final StyleService styleService;
