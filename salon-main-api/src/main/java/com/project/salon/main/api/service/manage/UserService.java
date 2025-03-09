@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static com.project.salon.main.api.utils.Common.*;
@@ -118,5 +119,15 @@ public class UserService {
         userInfo.setUserEmail(encryptStringSalt(userInfo.getUserEmail()));
 
         return userInfo;
+    }
+
+    public List<UserListAll> userListAll(String companyGuid) {
+        List<UserListAll> userListAlls = salonAdminRepositoryImpl.findUserListAll(UUID.fromString(companyGuid));
+
+        for (UserListAll userListAll : userListAlls) {
+            userListAll.setUserName(encryptStringSalt(userListAll.getUserName()));
+        }
+
+        return userListAlls;
     }
 }

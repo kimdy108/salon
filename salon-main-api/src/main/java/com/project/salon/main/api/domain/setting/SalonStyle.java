@@ -47,15 +47,15 @@ public class SalonStyle extends SalonCommonBase {
 
     @Comment("중간 예약 여부")
     @Column(name = "is_middle_time", columnDefinition = "ENUM('YES','NO') NOT NULL DEFAULT 'NO'")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private IsYesNo isMiddleTime;
 
     @Comment("중간 시간")
     @Column(name = "middle_time", length = 10)
-    private int middleTime;
+    private String middleTime;
 
     @Builder
-    public SalonStyle (UUID styleGuid, String styleName, Long adminSeq, UUID adminGuid, String styleDetail, int styleDuration, IsYesNo isMiddleTime, int middleTime, IsYesNo isActive, LocalDateTime insertData, LocalDateTime updateData, String descriptionNote) {
+    public SalonStyle (UUID styleGuid, String styleName, Long adminSeq, UUID adminGuid, String styleDetail, int styleDuration, IsYesNo isMiddleTime, String middleTime, IsYesNo isActive, LocalDateTime insertData, LocalDateTime updateData, String descriptionNote) {
         this.styleGuid = styleGuid;
         this.styleName = styleName;
         this.adminSeq = adminSeq;
@@ -71,7 +71,7 @@ public class SalonStyle extends SalonCommonBase {
         this.setDescriptionNote(descriptionNote);
     }
 
-    public void update(String styleName, String styleDetail, int styleDuration, IsYesNo isMiddleTime, int middleTime, LocalDateTime updateDate, String descriptionNote) {
+    public void update(String styleName, String styleDetail, int styleDuration, IsYesNo isMiddleTime, String middleTime, LocalDateTime updateDate, String descriptionNote) {
         this.styleName = styleName;
         this.styleDetail = styleDetail;
         this.styleDuration = styleDuration;

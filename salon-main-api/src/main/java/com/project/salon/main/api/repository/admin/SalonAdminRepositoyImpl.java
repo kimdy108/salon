@@ -8,6 +8,7 @@ import com.project.salon.main.api.dto.manage.master.MasterInfo;
 import com.project.salon.main.api.dto.manage.master.MasterList;
 import com.project.salon.main.api.dto.manage.user.UserInfo;
 import com.project.salon.main.api.dto.manage.user.UserList;
+import com.project.salon.main.api.dto.manage.user.UserListAll;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -95,6 +96,23 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                 .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetchOne();
+    }
+
+    public List<UserListAll> findUserListAll(UUID companyGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonCompany.companyGuid.eq(companyGuid));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        UserListAll.class,
+                        qSalonAdmin.adminGuid.as("userGuid"),
+                        qSalonAdmin.adminName.as("userName"),
+                        qSalonCompany.companyName.as("companyName")
+                ))
+                .from(qSalonAdmin)
+                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .where(bb)
+                .fetch();
     }
 
     public Page<MasterList> findMasterListPage(String searchType, String searchValue, Long offset, int limit, Pageable pageable) {

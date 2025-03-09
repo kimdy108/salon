@@ -1,12 +1,10 @@
 package com.project.salon.main.api.service.setting;
 
+import com.google.gson.Gson;
 import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.setting.SalonStyle;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
-import com.project.salon.main.api.dto.setting.style.StyleActive;
-import com.project.salon.main.api.dto.setting.style.StyleList;
-import com.project.salon.main.api.dto.setting.style.StyleRegist;
-import com.project.salon.main.api.dto.setting.style.StyleUpdate;
+import com.project.salon.main.api.dto.setting.style.*;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.setting.SalonStyleRepository;
 import com.project.salon.main.api.repository.setting.SalonStyleRepositoryImpl;
@@ -19,11 +17,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+
+import static com.project.salon.main.api.utils.Common.*;
 
 @Service
 @RequiredArgsConstructor
 public class StyleService {
+    private final Gson gson;
+
     private final SalonAdminRepository salonAdminRepository;
     private final SalonStyleRepository salonStyleRepository;
 
@@ -44,7 +47,7 @@ public class StyleService {
                 .styleDetail(styleRegist.getStyleDetail())
                 .styleDuration(styleRegist.getStyleDuration())
                 .isMiddleTime(styleRegist.getIsMiddleTime())
-                .middleTime(styleRegist.getMiddleTime())
+                .middleTime(styleRegist.getMiddleTime().toString())
                 .isActive(IsYesNo.YES)
                 .insertData(nowDate)
                 .updateData(nowDate)
@@ -63,7 +66,7 @@ public class StyleService {
                 styleUpdate.getStyleDetail(),
                 styleUpdate.getStyleDuration(),
                 styleUpdate.getIsMiddleTime(),
-                styleUpdate.getMiddleTime(),
+                styleUpdate.getMiddleTime().toString(),
                 LocalDateTime.now(),
                 styleUpdate.getDescriptionNote()
         );
@@ -90,5 +93,14 @@ public class StyleService {
         Pageable pageable = PageRequest.of(offset.intValue(), limit, sort);
 
         return salonStyleRepositoryImpl.findStyleListPage(searchType, searchValue, offset, limit, pageable, UUID.fromString(companyGuid));
+    }
+
+    public StyleInfo getStyleInfo(String styleGuid) {
+        StyleInfo styleInfo = salonStyleRepositoryImpl.findStyleInfo(UUID.fromString(styleGuid));
+
+        styleInfo.setUserName(encryptStringSalt(styleInfo.getUserName()));
+        styleInfo.setMiddleTime(gson.fromJson(styleInfo.getMiddleTimeString(), List.class));
+
+        return styleInfo;
     }
 }

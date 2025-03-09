@@ -11,6 +11,7 @@
             :options="options" 
             :optionLabel="optionLabel" 
             :optionValue="optionValue"
+            :multiple="multiple"
             :disabled="isDisabled"
           ></SelectButton>
         </div>
@@ -24,6 +25,6 @@ import { SelectButton } from 'primevue'
 
 import { defineProps, defineModel } from "vue"
 
-defineProps(['inputTitle', 'isRequire', 'options', 'optionLabel', 'optionValue', 'isDisabled'])
+defineProps(['inputTitle', 'isRequire', 'options', 'optionLabel', 'optionValue', 'multiple', 'isDisabled'])
 const inputValue = defineModel('inputValue', { required: true })
 </script>

@@ -87,4 +87,17 @@ public class StyleController {
     ) {
         return ResponseMsg.successResponse(styleService.styleListPage(searchType, searchValue, offset, limit, companyGuid));
     }
+
+    @GetMapping("/info/{styleGuid}")
+    public ResponseEntity<ResponseMsg> styleInfo(@PathVariable String styleGuid, HttpServletRequest req) {
+        AuditLogRegist auditLogRegist = AuditLogRegist.builder()
+                .accessToken(req.getHeader("Authorization"))
+                .controllerCategory(CONTROLLER_CATEGORY)
+                .controllerType("styleInfo")
+                .auditDetail(styleGuid)
+                .build();
+        auditService.auditRegist(auditLogRegist);
+
+        return ResponseMsg.successResponse(styleService.getStyleInfo(styleGuid));
+    }
 }

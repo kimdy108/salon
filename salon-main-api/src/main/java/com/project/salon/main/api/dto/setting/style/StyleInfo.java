@@ -11,12 +11,15 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StyleRegist {
+public class StyleInfo {
+    private UUID styleGuid;
+    private String companyName;
+    private String userName;
     private String styleName;
-    private UUID adminGuid;
     private String styleDetail;
     private int styleDuration;
     private IsYesNo isMiddleTime;
-    private List<String> middleTime;
+    private String middleTimeString;
+    private List<Object> middleTime;
     private String descriptionNote;
 }

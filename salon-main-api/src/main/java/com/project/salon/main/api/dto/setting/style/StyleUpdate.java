@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -16,6 +17,6 @@ public class StyleUpdate {
     private String styleDetail;
     private int styleDuration;
     private IsYesNo isMiddleTime;
-    private int middleTime;
+    private List<String> middleTime;
     private String descriptionNote;
 }

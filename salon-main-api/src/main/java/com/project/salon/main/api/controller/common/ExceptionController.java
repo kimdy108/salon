@@ -16,6 +16,7 @@ public class ExceptionController {
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<ResponseMsg> handleRuntimeException(final RuntimeException e) {
         loggerService.writeLogger("error", "Runtime Error : " + e.getMessage());
+        e.printStackTrace();
 
         return ResponseMsg.errorResponse(e.getMessage());
     }

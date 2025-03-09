@@ -36,7 +36,7 @@ public class QSalonStyle extends EntityPathBase<SalonStyle> {
 
     public final EnumPath<com.project.salon.main.api.dto.constant.common.IsYesNo> isMiddleTime = createEnum("isMiddleTime", com.project.salon.main.api.dto.constant.common.IsYesNo.class);
 
-    public final NumberPath<Integer> middleTime = createNumber("middleTime", Integer.class);
+    public final StringPath middleTime = createString("middleTime");
 
     //inherited
     public final NumberPath<Long> seq = _super.seq;

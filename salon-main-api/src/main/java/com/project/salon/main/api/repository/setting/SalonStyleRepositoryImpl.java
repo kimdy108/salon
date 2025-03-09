@@ -4,6 +4,7 @@ import com.project.salon.main.api.domain.admin.QSalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
 import com.project.salon.main.api.domain.setting.QSalonStyle;
 import com.project.salon.main.api.domain.setting.SalonStyle;
+import com.project.salon.main.api.dto.setting.style.StyleInfo;
 import com.project.salon.main.api.dto.setting.style.StyleList;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -71,6 +72,30 @@ public class SalonStyleRepositoryImpl extends QuerydslRepositorySupport {
                 .where(bb, eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), eqStyleName(searchType, searchValue));
 
         return PageableExecutionUtils.getPage(styleLists, pageable, countQuery::fetchOne);
+    }
+
+    public StyleInfo findStyleInfo(UUID styleGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonStyle.styleGuid.eq(styleGuid));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        StyleInfo.class,
+                        qSalonStyle.styleGuid.as("styleGuid"),
+                        qSalonCompany.companyName.as("companyName"),
+                        qSalonAdmin.adminName.as("userName"),
+                        qSalonStyle.styleName.as("styleName"),
+                        qSalonStyle.styleDetail.as("styleDetail"),
+                        qSalonStyle.styleDuration.as("styleDuration"),
+                        qSalonStyle.isMiddleTime.as("isMiddleTime"),
+                        qSalonStyle.middleTime.as("middleTimeString"),
+                        qSalonStyle.descriptionNote.as("descriptionNote")
+                ))
+                .from(qSalonStyle)
+                .leftJoin(qSalonAdmin).on(qSalonStyle.adminSeq.eq(qSalonAdmin.seq))
+                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .where(bb)
+                .fetchOne();
     }
 
     private BooleanExpression eqCompanyName(String searchType, String searchValue) {

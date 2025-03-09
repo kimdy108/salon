@@ -115,4 +115,9 @@ public class UserController {
 
         return ResponseMsg.successResponse(userService.userInfo(userGuid));
     }
+
+    @GetMapping("/list/{companyGuid}")
+    public ResponseEntity<ResponseMsg> userList(@PathVariable String companyGuid) {
+        return ResponseMsg.successResponse(userService.userListAll(companyGuid));
+    }
 }
