@@ -193,7 +193,7 @@ watch(() => props.showModal, (newVal) => {
   }
 })
 watch (() => companyGuid.value, (newVal) => {
-  getUserList(newVal)
+  if (companyGuid.value !== '') getUserList(newVal)
 })
 </script>
 

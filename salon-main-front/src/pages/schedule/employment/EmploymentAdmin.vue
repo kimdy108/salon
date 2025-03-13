@@ -8,16 +8,27 @@
       <FullCalendar class="w-full" defaultView="dayGridMonth" :options="calendarOptions" />
     </div>
 
+    <EmploymentRegist :showModal="isRegistModal" :targetDate="targetDate" @closeRegistModal="closeRegistModal"></EmploymentRegist>
+
 
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import dayjs from 'dayjs'
+import { onMounted, ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import koLocale from '@fullcalendar/core/locales/ko';
+
+import EmploymentRegist from '@/pages/schedule/employment/EmploymentRegist.vue'
+
+onMounted(() => {
+  console.log(currentDate)
+})
+
+const currentDate = dayjs().format('YYYY-MM')
 
 const isRegistModal = ref(false)
 const isUpdateModal = ref(false)
@@ -27,14 +38,16 @@ const targetDate = ref('')
 const handleDateClick = (val) => {
   targetDate.value = val.dateStr
   isRegistModal.value = true
-  console.log(targetDate.value)
-  console.log(isRegistModal.value)
 }
 const handleEventClick = (val) => {
   updateGuid.value = val.event.id
   isUpdateModal.value = true
   console.log(updateGuid.value)
   console.log(isUpdateModal.value)
+}
+
+const closeRegistModal = () => {
+  isRegistModal.value = false
 }
 
 const calendarOptions = ref({
@@ -44,7 +57,7 @@ const calendarOptions = ref({
   eventClick: handleEventClick,
   dateClick: handleDateClick,
   headerToolbar: {
-    left: 'prevYear,prev today next,nextYear',
+    left: '',
     center: 'title',
     right: 'dayGridMonth'
   },

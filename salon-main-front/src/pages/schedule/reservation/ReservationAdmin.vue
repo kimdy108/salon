@@ -43,7 +43,7 @@ const calendarOptions = ref({
   eventClick: handleEventClick,
   dateClick: handleDateClick,
   headerToolbar: {
-    left: 'prevYear,prev today next,nextYear',
+    left: '',
     center: 'title',
     right: 'dayGridMonth,timeGridWeek,timeGridDay'
   },
