@@ -33,9 +33,17 @@ public class SalonEmployment extends SalonCommonBase {
     @Column(name = "admin_guid", length = 50, updatable = false, nullable = false)
     private UUID adminGuid;
 
-    @Comment("근태 날짜")
-    @Column(name = "employment_date", nullable = false, length = 10)
-    private String employmentDate;
+    @Comment("근태 년")
+    @Column(name = "employment_year", nullable = false, length = 10)
+    private String employmentYear;
+
+    @Comment("근태 월")
+    @Column(name = "employment_month", nullable = false, length = 10)
+    private String employmentMonth;
+
+    @Comment("근태 일")
+    @Column(name = "employment_day", nullable = false, length = 10)
+    private String employmentDay;
 
     @Comment("근태 종류")
     @Column(name = "employment_category", columnDefinition = "ENUM('EMPOLYMENT','HOLIDAY','VACATION','SICKLEAVE','OFFICIALVACATION') NOT NULL DEFAULT 'EMPOLYMENT'")
@@ -43,16 +51,25 @@ public class SalonEmployment extends SalonCommonBase {
     private EmploymentCategory employmentCategory;
 
     @Builder
-    public SalonEmployment (UUID employmentGuid, Long adminSeq, UUID adminGuid, String employmentDate, EmploymentCategory employmentCategory, IsYesNo isActive, LocalDateTime insertData, LocalDateTime updateData, String descriptionNote) {
+    public SalonEmployment (UUID employmentGuid, Long adminSeq, UUID adminGuid, String employmentYear, String employmentMonth, String employmentDay, EmploymentCategory employmentCategory, IsYesNo isActive, LocalDateTime insertData, LocalDateTime updateData, String descriptionNote) {
         this.employmentGuid = employmentGuid;
         this.adminSeq = adminSeq;
         this.adminGuid = adminGuid;
-        this.employmentDate = employmentDate;
+        this.employmentYear = employmentYear;
+        this.employmentMonth = employmentMonth;
+        this.employmentDay = employmentDay;
         this.employmentCategory = employmentCategory;
 
         this.setIsActive(isActive);
         this.setInsertDate(insertData);
         this.setUpdateDate(updateData);
+        this.setDescriptionNote(descriptionNote);
+    }
+
+    public void update (EmploymentCategory employmentCategory, LocalDateTime updateDate, String descriptionNote) {
+        this.employmentCategory = employmentCategory;
+
+        this.setUpdateDate(updateDate);
         this.setDescriptionNote(descriptionNote);
     }
 }

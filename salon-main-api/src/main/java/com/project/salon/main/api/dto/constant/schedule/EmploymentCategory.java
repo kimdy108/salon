@@ -1,5 +1,10 @@
 package com.project.salon.main.api.dto.constant.schedule;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Getter
+@Accessors(fluent = true)
 public enum EmploymentCategory {
     EMPOLYMENT("근무"),
     HOLIDAY("휴무"),

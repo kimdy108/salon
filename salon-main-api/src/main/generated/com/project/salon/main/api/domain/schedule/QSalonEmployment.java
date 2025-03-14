@@ -30,9 +30,13 @@ public class QSalonEmployment extends EntityPathBase<SalonEmployment> {
 
     public final EnumPath<com.project.salon.main.api.dto.constant.schedule.EmploymentCategory> employmentCategory = createEnum("employmentCategory", com.project.salon.main.api.dto.constant.schedule.EmploymentCategory.class);
 
-    public final StringPath employmentDate = createString("employmentDate");
+    public final StringPath employmentDay = createString("employmentDay");
 
     public final ComparablePath<java.util.UUID> employmentGuid = createComparable("employmentGuid", java.util.UUID.class);
+
+    public final StringPath employmentMonth = createString("employmentMonth");
+
+    public final StringPath employmentYear = createString("employmentYear");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> insertDate = _super.insertDate;

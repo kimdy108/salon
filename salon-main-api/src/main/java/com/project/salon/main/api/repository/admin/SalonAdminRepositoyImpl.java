@@ -61,7 +61,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonAdmin.updateDate.as("updateDate")
                 ))
                 .from(qSalonAdmin)
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), bb)
                 .orderBy(sortedColumn)
                 .limit(limit)
@@ -93,7 +93,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonAdmin.descriptionNote.as("descriptionNote")
                 ))
                 .from(qSalonAdmin)
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetchOne();
     }
@@ -110,7 +110,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonCompany.companyName.as("companyName")
                 ))
                 .from(qSalonAdmin)
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetch();
     }
@@ -137,7 +137,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonAdmin.updateDate.as("updateDate")
                 ))
                 .from(qSalonAdmin)
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), bb)
                 .orderBy(sortedColumn)
                 .limit(limit)
@@ -169,7 +169,7 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonAdmin.descriptionNote.as("descriptionNote")
                 ))
                 .from(qSalonAdmin)
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetchOne();
     }

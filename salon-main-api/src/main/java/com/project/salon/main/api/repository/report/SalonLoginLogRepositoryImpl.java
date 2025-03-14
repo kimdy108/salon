@@ -57,8 +57,8 @@ public class SalonLoginLogRepositoryImpl extends QuerydslRepositorySupport {
                         qSalonCompany.companyName.as("companyName")
                 ))
                 .from(qSalonLoginLog)
-                .leftJoin(qSalonAdmin).on(qSalonLoginLog.adminSeq.eq(qSalonAdmin.seq))
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonAdmin).on(qSalonLoginLog.adminSeq.eq(qSalonAdmin.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb, eqAdminID(searchType, searchValue), eqAdminName(searchType, searchValue), eqCompanyName(searchType, searchValue))
                 .orderBy(sortedColumn)
                 .limit(limit)
@@ -68,8 +68,8 @@ public class SalonLoginLogRepositoryImpl extends QuerydslRepositorySupport {
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(qSalonLoginLog.count())
                 .from(qSalonLoginLog)
-                .leftJoin(qSalonAdmin).on(qSalonLoginLog.adminSeq.eq(qSalonAdmin.seq))
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonAdmin).on(qSalonLoginLog.adminSeq.eq(qSalonAdmin.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb, eqAdminID(searchType, searchValue), eqAdminName(searchType, searchValue), eqCompanyName(searchType, searchValue));
 
         return PageableExecutionUtils.getPage(loginLogLists, pageable, countQuery::fetchOne);

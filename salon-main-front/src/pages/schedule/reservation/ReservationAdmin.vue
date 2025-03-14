@@ -13,12 +13,13 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs'
+import { ref } from 'vue';
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import koLocale from '@fullcalendar/core/locales/ko';
-import { ref } from 'vue';
 
 const isRegistModal = ref(false)
 const isUpdateModal = ref(false)
@@ -43,12 +44,18 @@ const calendarOptions = ref({
   eventClick: handleEventClick,
   dateClick: handleDateClick,
   headerToolbar: {
-    left: '',
+    left: 'prevYear,prev today next,nextYear',
     center: 'title',
     right: 'dayGridMonth,timeGridWeek,timeGridDay'
   },
   locale: koLocale,
-  contentHeight: 700
+  contentHeight: 700,
+  datesSet: function (info) {
+    const currentStart = dayjs(info.view.currentStart);
+    const currentEnd = dayjs(info.view.currentEnd).subtract(1, 'day');
+    console.log('currentStart : ' + currentStart.format('YYYY-MM-DD'))
+    console.log('currentEnd : ' + currentEnd.format('YYYY-MM-DD'))
+  }
 })
 
 </script>

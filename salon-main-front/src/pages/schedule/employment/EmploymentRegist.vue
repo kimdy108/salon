@@ -16,9 +16,7 @@
       <div class="w-full px-5">
         <SalonSelect v-if="decryptStringSalt(userStore.getUserRole) === 'MASTER'" selectTitle="고객사" selectPlaceholder="고객사" :isRequire="true" :options="companyList" optionTitle="companyName" optionSub="managerName" optionValue="companyGuid" v-model:inputValue="companyGuid"></SalonSelect>
         <SalonSelect selectTitle="담당자" selectPlaceholder="담당자" :isRequire="true" :options="userList" optionTitle="userName" optionSub="companyName" optionValue="userGuid" v-model:inputValue="userGuid"></SalonSelect>
-
         <SalonSelectBtn inputTitle="근태 종류" :isDisabled="false" :isRequire="true" :options="employmentOptions" optionLabel="value" optionValue="key" :multiple="false" v-model:inputValue="employmentOption"></SalonSelectBtn>
-
         <SalonTextArea inputTitle="비고" :isDisabled="false" :isRequire="false" inputPlaceholder="" inputHint="" v-model:inputValue="descriptionNote" ></SalonTextArea>
       </div>
 
@@ -71,15 +69,14 @@ const initData = () => {
   descriptionNote.value = ''
 
   getCompanyList()
-  console.log(props.targetDate)
 }
 
 const employmentOptions = [
-    { id : 1, key : 'EMPOLYMENT', value : '근무'},
-    { id : 2, key : 'HOLIDAY', value : '휴무'},
-    { id : 3, key : 'VACATION', value : '연차'},
-    { id : 4, key : 'SICKLEAVE', value : '병가'},
-    { id : 5, key : 'OFFICIALVACATION', value : '공가'}
+    { key : 'EMPOLYMENT', value : '근무'},
+    { key : 'HOLIDAY', value : '휴무'},
+    { key : 'VACATION', value : '연차'},
+    { key : 'SICKLEAVE', value : '병가'},
+    { key : 'OFFICIALVACATION', value : '공가'}
 ]
 
 const employmentRegist = () => {
@@ -141,6 +138,7 @@ watch(() => props.showModal, (newVal) => {
 
     if (decryptStringSalt(userStore.getUserRole) !== 'MASTER') {
       companyGuid.value = decryptStringSalt(userStore.getCurrentUser.ucg)
+      getUserList(companyGuid.value)
     }
   }
 })
@@ -148,7 +146,3 @@ watch (() => companyGuid.value, (newVal) => {
   if (companyGuid.value !== '') getUserList(newVal)
 })
 </script>
-
-<style lang="scss" scoped>
-
-</style>

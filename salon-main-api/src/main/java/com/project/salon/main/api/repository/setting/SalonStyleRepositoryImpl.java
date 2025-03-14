@@ -58,8 +58,8 @@ public class SalonStyleRepositoryImpl extends QuerydslRepositorySupport {
                         qSalonStyle.updateDate.as("updateDate")
                 ))
                 .from(qSalonStyle)
-                .leftJoin(qSalonAdmin).on(qSalonStyle.adminSeq.eq(qSalonAdmin.seq))
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonAdmin).on(qSalonStyle.adminSeq.eq(qSalonAdmin.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb, eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), eqStyleName(searchType, searchValue))
                 .orderBy(sortedColumn)
                 .limit(limit)
@@ -92,8 +92,8 @@ public class SalonStyleRepositoryImpl extends QuerydslRepositorySupport {
                         qSalonStyle.descriptionNote.as("descriptionNote")
                 ))
                 .from(qSalonStyle)
-                .leftJoin(qSalonAdmin).on(qSalonStyle.adminSeq.eq(qSalonAdmin.seq))
-                .leftJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .innerJoin(qSalonAdmin).on(qSalonStyle.adminSeq.eq(qSalonAdmin.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetchOne();
     }
