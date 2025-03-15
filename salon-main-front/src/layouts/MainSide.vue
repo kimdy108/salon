@@ -62,7 +62,7 @@ const isShowMenu = (roleList) => {
 
 const dashBoardItems = [
   { id: '6433015e-8aad-4a27-8b65-f2d577eba5ef', path: '/salon/dashboard/company', label: '고객사 대시보드', name: 'CompanyDashboard', role: ['MASTER'] },
-  { id: 'c8f136b1-e63d-49f0-83e4-b5dcfc191e16', path: '/salon/dashboard/schedule', label: '스케줄 대시보드', name: 'ScheduleDashboard', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] }
+  { id: 'c8f136b1-e63d-49f0-83e4-b5dcfc191e16', path: '/salon/dashboard/schedule', label: '스케줄 대시보드', name: 'ScheduleDashboard', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
 ]
 
 const manageItem = [

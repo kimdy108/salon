@@ -51,7 +51,7 @@ const routes = [
   { path: '/', name: 'IndexPage', component: loadPage('views', 'IndexPage'), meta: { id: 'IndexPage' } },
   { path: '/install', name: 'InstallPage', component: loadPage('views', 'InstallPage'), meta: { id: 'InstallPage' } },
   { path: '/login', name: 'LoginPage', component: loadPage('views', 'LoginPage'), meta: { id: 'LoginPage' } },
-  { path: '/main', name: 'MainPage', component: loadPage('views', 'MainPage'), meta: { id: 'MainPage' }, children: mainChild, redirect: '/salon/dashboard/company' },
+  { path: '/main', name: 'MainPage', component: loadPage('views', 'MainPage'), meta: { id: 'MainPage' }, children: mainChild, redirect: '/salon/dashboard/' },
 ]
 
 const router = createRouter({

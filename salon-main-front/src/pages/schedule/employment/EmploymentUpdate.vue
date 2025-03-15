@@ -24,6 +24,7 @@
         <div>
           <button class="text-gray-700 bg-white hover:bg-gray-100 border-gray-200 rounded-lg shadow-md py-3 px-6 text-base mx-2" @click="closeUpdateModal">닫기</button>
           <button v-if="checkUserRole" class="text-orange-600 bg-orange-200 hover:bg-orange-300 border-orange-200 rounded-lg shadow-md py-3 px-6 text-base mx-2" @click="employmentUpdate">수정</button>
+          <button v-if="checkUserRole" class="text-red-600 bg-red-200 hover:bg-red-300 border-red-200 rounded-lg shadow-md py-3 px-6 text-base mx-2" @click="employmentDelete">삭제</button>
         </div>
       </template>
     
@@ -78,7 +79,11 @@ const employmentOptions = [
 ]
 
 const employmentUpdate = () => {
-    employmentUpdateAction()
+  employmentUpdateAction()
+}
+
+const employmentDelete = () => {
+  employmentDeleteAction()
 }
 
 const getEmploymentInfo = async () => {
@@ -112,6 +117,20 @@ const employmentUpdateAction = async () => {
   })
   if (updateResult.retStatus) {
     AlertService.normalAlertAction('수정 했습니다.', '근태관리', '확인', 'success')
+    closeUpdateModal()
+  }
+  else AlertService.normalAlertAction(updateResult.retData, '근태관리', '확인', 'error')
+}
+
+const employmentDeleteAction = async () => {
+  const reqHeader = { accept: 'application/json' }
+  const updateResult = await ApiService.requestAPI({
+    headers: reqHeader,
+    method: 'DELETE',
+    url: `/main/schedule/employment/delete/${employmentGuid.value}`,
+  })
+  if (updateResult.retStatus) {
+    AlertService.normalAlertAction('삭제 했습니다.', '근태관리', '확인', 'success')
     closeUpdateModal()
   }
   else AlertService.normalAlertAction(updateResult.retData, '근태관리', '확인', 'error')

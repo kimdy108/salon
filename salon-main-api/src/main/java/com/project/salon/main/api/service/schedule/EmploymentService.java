@@ -36,6 +36,7 @@ public class EmploymentService {
 
         SalonAdmin salonAdmin = salonAdminRepository.findSalonAdminByAdminGuid(employmentRegist.getUserGuid());
         if (salonAdmin == null) throw new RuntimeException("사용자가 존재하지 않습니다.");
+        if (!salonCompany.getSeq().equals(salonAdmin.getCompanySeq())) throw new RuntimeException("사용자가 존재하지 않습니다.");
 
         String[] dateArray = employmentRegist.getEmploymentDate().split("-");
         if (dateArray.length != 3) throw new RuntimeException("날짜 데이터에 오류가 있습니다.");

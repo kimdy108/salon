@@ -21,12 +21,11 @@
         <SalonInput inputTitle="스타일 이름" :isRequire="true" inputType="text" inputPlaceholder="" :isDisabled="false" :isPassword="false" v-model:inputValue="styleName" />
         <SalonTextArea inputTitle="스타일 설명" :isDisabled="false" :isRequire="false" inputPlaceholder="" inputHint="" v-model:inputValue="styleDetail" ></SalonTextArea>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-3 gap-4">
           <SalonInput inputTitle="소요시간" :isRequire="true" inputType="text" inputPlaceholder="30분 단위로 입력해주세요." :isDisabled="false" :isPassword="false" v-model:inputValue="styleDuration" />
           <SalonToggleSw inputTitle="중간 시간 여부" :isRequire="true" :isDisabled="styleDuration >= 90 ? false : true" trueValue="YES" falseValue="NO" trueString="중간 시간 사용" falseString="중간 시간 사용 안함"  v-model:inputValue="isMiddleTime"></SalonToggleSw>
+          <SalonSelectBtn v-if="isMiddleTime === 'YES'" inputTitle="중간 시간" :isDisabled="isMiddleTime === 'YES' ? false : true" :isRequire="true" :options="middleTimeOptions" optionLabel="value" optionValue="value" :multiple="true" v-model:inputValue="middleTime"></SalonSelectBtn>
         </div>
-
-        <SalonSelectBtn v-if="isMiddleTime === 'YES'" inputTitle="중간 시간" :isDisabled="isMiddleTime === 'YES' ? false : true" :isRequire="true" :options="middleTimeOptions" optionLabel="value" optionValue="value" :multiple="true" v-model:inputValue="middleTime"></SalonSelectBtn>
         
         <SalonTextArea inputTitle="비고" :isDisabled="false" :isRequire="false" inputPlaceholder="" inputHint="" v-model:inputValue="descriptionNote" ></SalonTextArea>
 
