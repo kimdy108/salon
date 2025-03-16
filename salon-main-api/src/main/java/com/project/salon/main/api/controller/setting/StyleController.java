@@ -100,4 +100,9 @@ public class StyleController {
 
         return ResponseMsg.successResponse(styleService.getStyleInfo(styleGuid));
     }
+
+    @GetMapping("/list/{userGuid}")
+    public ResponseEntity<ResponseMsg> styleList(@PathVariable String userGuid) {
+        return ResponseMsg.successResponse(styleService.getStyleListAll(userGuid, false));
+    }
 }

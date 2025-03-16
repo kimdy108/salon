@@ -103,4 +103,8 @@ public class StyleService {
 
         return styleInfo;
     }
+
+    public List<StyleListAll> getStyleListAll(String userGuid, boolean isAll) {
+        return salonStyleRepositoryImpl.findStyleListAll(UUID.fromString(userGuid), isAll);
+    }
 }

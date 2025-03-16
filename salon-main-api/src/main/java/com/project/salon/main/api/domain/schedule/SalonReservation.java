@@ -27,6 +27,10 @@ public class SalonReservation extends SalonCommonBase {
     @Column(name = "reservation_guid", unique = true, length = 50, updatable = false, nullable = false)
     private UUID reservationGuid;
 
+    @Comment("예약 파트너 GUID")
+    @Column(name = "reservation_partner_guid", length = 50, updatable = false, nullable = false)
+    private UUID reservationPartnerGuid;
+
     @Comment("사용자 seq")
     @Column(name = "admin_seq", length = 10, nullable = false)
     private Long adminSeq;
@@ -76,12 +80,13 @@ public class SalonReservation extends SalonCommonBase {
     private String clientName;
 
     @Comment("예약자 번호")
-    @Column(name = "client_number", nullable = false, length = 10)
+    @Column(name = "client_number", nullable = false, length = 20)
     private String clientNumber;
 
     @Builder
-    public SalonReservation (UUID reservationGuid, Long adminSeq, UUID adminGuid, Long styleSeq, UUID styleGuid, String reservationYear, String reservationMonth, String reservationDay, String reservationHour, String reservationMinute, String reservationEndHour, String reservationEndMinute, String clientName, String clientNumber, IsYesNo isActive, LocalDateTime insertDate, LocalDateTime updateDate, String descriptionNote) {
+    public SalonReservation (UUID reservationGuid, UUID reservationPartnerGuid, Long adminSeq, UUID adminGuid, Long styleSeq, UUID styleGuid, String reservationYear, String reservationMonth, String reservationDay, String reservationHour, String reservationMinute, String reservationEndHour, String reservationEndMinute, String clientName, String clientNumber, IsYesNo isActive, LocalDateTime insertDate, LocalDateTime updateDate, String descriptionNote) {
         this.reservationGuid = reservationGuid;
+        this.reservationPartnerGuid = reservationPartnerGuid;
         this.adminSeq = adminSeq;
         this.adminGuid = adminGuid;
         this.styleSeq = styleSeq;

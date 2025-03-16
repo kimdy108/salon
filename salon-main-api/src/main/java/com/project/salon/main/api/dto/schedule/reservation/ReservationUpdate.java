@@ -9,7 +9,8 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationRegist {
+public class ReservationUpdate {
+    private UUID reservationGuid;
     private UUID userGuid;
     private UUID styleGuid;
     private String reservationDate;

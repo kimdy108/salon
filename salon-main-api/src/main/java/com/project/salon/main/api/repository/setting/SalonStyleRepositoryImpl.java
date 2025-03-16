@@ -4,8 +4,10 @@ import com.project.salon.main.api.domain.admin.QSalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
 import com.project.salon.main.api.domain.setting.QSalonStyle;
 import com.project.salon.main.api.domain.setting.SalonStyle;
+import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.dto.setting.style.StyleInfo;
 import com.project.salon.main.api.dto.setting.style.StyleList;
+import com.project.salon.main.api.dto.setting.style.StyleListAll;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -96,6 +98,24 @@ public class SalonStyleRepositoryImpl extends QuerydslRepositorySupport {
                 .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetchOne();
+    }
+
+    public List<StyleListAll> findStyleListAll(UUID userGuid, boolean isAll) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonAdmin.adminGuid.eq(userGuid));
+        if (!isAll) bb.and(qSalonStyle.isActive.eq(IsYesNo.YES));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        StyleListAll.class,
+                        qSalonStyle.styleGuid.as("styleGuid"),
+                        qSalonStyle.styleName.as("styleName"),
+                        qSalonStyle.styleDuration.as("styleDuration")
+                ))
+                .from(qSalonStyle)
+                .innerJoin(qSalonAdmin).on(qSalonStyle.adminSeq.eq(qSalonAdmin.seq))
+                .where(bb)
+                .fetch();
     }
 
     private BooleanExpression eqCompanyName(String searchType, String searchValue) {

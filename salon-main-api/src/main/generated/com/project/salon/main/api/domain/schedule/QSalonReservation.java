@@ -52,6 +52,8 @@ public class QSalonReservation extends EntityPathBase<SalonReservation> {
 
     public final StringPath reservationMonth = createString("reservationMonth");
 
+    public final ComparablePath<java.util.UUID> reservationPartnerGuid = createComparable("reservationPartnerGuid", java.util.UUID.class);
+
     public final StringPath reservationYear = createString("reservationYear");
 
     //inherited
