@@ -45,10 +45,18 @@ import AlertService from '@/services/AlertService'
 
 onMounted(() => {
   if (decryptStringSalt(userStore.getUserRole) === 'MASTER') getCompanyList()
-  if (decryptStringSalt(userStore.getUserRole) !== 'MASTER') getUserList(companyGuid.value)
+  if (decryptStringSalt(userStore.getUserRole) !== 'MASTER') {
+    getUserList(companyGuid.value)
+    getReservationMonthList(companyGuid.value)
+  }
 })
 
 const userStore = useUserStore()
+
+const currentDate = dayjs().format('YYYY-MM')
+const searchDate = ref('')
+const searchStartDate = ref('')
+const searchEndDate = ref('')
 
 const isRegistModal = ref(false)
 const isUpdateModal = ref(false)
@@ -60,7 +68,8 @@ const userGuid = ref('')
 const userList = ref([])
 
 const fullCalendar = ref(null)
-const calendarEvents = ref([])
+const calendarMonthEvents = ref([])
+const calendarDayEvents = ref([])
 
 const refreshAll = () => {
   updateGuid.value = ''
@@ -71,7 +80,8 @@ const refreshAll = () => {
   userList.value = []
 
   fullCalendar.value = null
-  calendarEvents.value = []
+  calendarMonthEvents.value = []
+  calendarDayEvents.value = []
 
   if (decryptStringSalt(userStore.getUserRole) === 'MASTER') getCompanyList()
   if (decryptStringSalt(userStore.getUserRole) !== 'MASTER') getUserList(companyGuid.value)
@@ -105,7 +115,7 @@ const closeRegistModal = () => {
 const calendarOptions = ref({
   plugins: [ dayGridPlugin, timeGridPlugin, interactionPlugin ],
   initialView: 'dayGridMonth',
-  events: calendarEvents.value,
+  events: calendarMonthEvents.value,
   eventClick: handleEventClick,
   dateClick: handleDateClick,
   headerToolbar: {
@@ -118,12 +128,20 @@ const calendarOptions = ref({
   datesSet: function (info) {
     const currentStart = dayjs(info.view.currentStart)
     const currentEnd = dayjs(info.view.currentEnd).subtract(1, 'day')
-    console.log('currentStart : ' + currentStart.format('YYYY-MM-DD'))
-    console.log('currentEnd : ' + currentEnd.format('YYYY-MM-DD'))
 
     if (info.view.type === 'dayGridMonth') {
-      calendarOptions.value.events = calendarEvents.value.filter(calendarEvents => calendarEvents.date)
-    } else calendarOptions.value.events = calendarEvents.value
+      searchDate.value = currentStart.format('YYYY-MM')
+      if(companyGuid.value !== emptyUUID) {
+        getReservationMonthList(companyGuid.value)
+        calendarOptions.value.events = calendarMonthEvents.value
+      }
+    }
+    else {
+      searchStartDate.value = currentStart.format('YYYY-MM-DD')
+      searchEndDate.value = currentEnd.format('YYYY-MM-DD')
+      // getApi
+      calendarOptions.value.events = calendarDayEvents.value
+    }
   }
 })
 
@@ -153,8 +171,39 @@ const getUserList = async (companyGuid) => {
     }
   }
 }
+
+const getReservationMonthList = async (companyGuid) => {
+  const reqHeader = { accept: 'application/json' }
+  const reqParams = {
+    'searchDate' : searchDate.value === '' ? currentDate : searchDate.value,
+    'companyGuid': companyGuid
+  }
+  const reservationList = await ApiService.requestAPI({
+    headers: reqHeader,
+    method: 'GET',
+    url: '/main/schedule/reservation/month/list',
+    params: reqParams
+  })
+  if (reservationList.retStatus) {
+    console.log(reservationList.retData)
+    calendarMonthEvents.value = []
+
+    for(const value of reservationList.retData) {
+      let inputDate = value.reservationYear + '-' + value.reservationMonth + '-' + value.reservationDay
+      let inputTitle = value.userName + ' - 예약 : ' + value.reservationCount + '건'
+      
+      calendarOptions.value.events.push(
+        {date: inputDate, title: inputTitle, backgroundColor: '#22d3ee', borderColor: '#22d3ee'}
+      )
+    }
+  }
+}
+
 watch (() => companyGuid.value, (newVal) => {
-  if (companyGuid.value !== emptyUUID) getUserList(newVal)
+  if (companyGuid.value !== emptyUUID) {
+    getUserList(newVal)
+    getReservationMonthList(companyGuid.value)
+  }
 })
 
 </script>

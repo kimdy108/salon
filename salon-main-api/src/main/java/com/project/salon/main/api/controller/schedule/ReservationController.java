@@ -61,4 +61,21 @@ public class ReservationController {
         reservationService.reservationDelete(reservationGuid);
         return ResponseMsg.successResponse("success");
     }
+
+    @GetMapping("/month/list")
+    public ResponseEntity<ResponseMsg> reservationMonthList(
+            @RequestParam String searchDate,
+            @RequestParam String companyGuid
+    ) {
+        return ResponseMsg.successResponse(reservationService.reservationMonthList(searchDate, companyGuid));
+    }
+
+    @GetMapping("/day/list")
+    public ResponseEntity<ResponseMsg> reservationDayList(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam String companyGuid
+    ) {
+        return ResponseMsg.successResponse(reservationService.reservationDayList(startDate, endDate, companyGuid));
+    }
 }

@@ -8,12 +8,15 @@ import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.domain.setting.SalonStyle;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.dto.constant.schedule.EmploymentCategory;
+import com.project.salon.main.api.dto.schedule.reservation.ReservationDayList;
+import com.project.salon.main.api.dto.schedule.reservation.ReservationMonthList;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationRegist;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationUpdate;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.manage.SalonCompanyRepository;
 import com.project.salon.main.api.repository.schedule.SalonEmploymentRepository;
 import com.project.salon.main.api.repository.schedule.SalonReservationRepository;
+import com.project.salon.main.api.repository.schedule.SalonReservationRepositoryImpl;
 import com.project.salon.main.api.repository.setting.SalonStyleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +36,8 @@ public class ReservationService {
     private final SalonStyleRepository salonStyleRepository;
     private final SalonEmploymentRepository salonEmploymentRepository;
     private final SalonReservationRepository salonReservationRepository;
+
+    private final SalonReservationRepositoryImpl salonReservationRepositoryImpl;
 
     @Transactional
     public void reservationRegist(ReservationRegist reservationRegist) {
@@ -161,5 +166,22 @@ public class ReservationService {
         if (salonReservation == null) throw new RuntimeException("존재하지 않은 예약입니다.");
 
         salonReservationRepository.deleteByReservationPartnerGuid(salonReservation.getReservationPartnerGuid());
+    }
+
+    public List<ReservationMonthList> reservationMonthList (String searchDate, String companyGuid) {
+        String[] dateArray = searchDate.split("-");
+        if (dateArray.length != 2) throw new RuntimeException("날짜 데이터가 정확하지 않습니다.");
+
+        return salonReservationRepositoryImpl.findReservationByMonth(dateArray[0], dateArray[1], UUID.fromString(companyGuid));
+    }
+
+    public List<ReservationDayList> reservationDayList (String startDate, String endDate, String companyGuid) {
+        String[] startDateArray = startDate.split("-");
+        if (startDateArray.length != 3) throw new RuntimeException("날짜 데이터가 정확하지 않습니다.");
+
+        String[] endDateArray = endDate.split("-");
+        if (endDateArray.length != 3) throw new RuntimeException("날짜 데이터가 정확하지 않습니다.");
+
+        return salonReservationRepositoryImpl.findReservationByDay(startDateArray[0], startDateArray[1], startDateArray[2], endDateArray[0], endDateArray[1], endDateArray[2], UUID.fromString(companyGuid));
     }
 }
