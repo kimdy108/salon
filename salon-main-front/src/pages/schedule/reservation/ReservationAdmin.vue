@@ -19,6 +19,7 @@
     </div>
 
     <ReservatoinRegist :showModal="isRegistModal" :targetDate="targetDate" :userGuid="userGuid" @closeRegistModal="closeRegistModal"></ReservatoinRegist>
+    <ReservationInfo :showModal="isUpdateModal" :targetDate="targetDate" :userGuid="userGuid" :updateGuid="updateGuid" @closeUpdateModal="closeUpdateModal"></ReservationInfo>
 
   </div>
 </template>
@@ -29,7 +30,9 @@ import { onMounted, ref, watch } from 'vue'
 
 import { decryptStringSalt } from '@/utils/common'
 import { useUserStore } from '@/stores/userStore'
+import { emptyUUID } from '@/references/config'
 import ApiService from '@/services/ApiService'
+import AlertService from '@/services/AlertService'
 
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -40,8 +43,7 @@ import koLocale from '@fullcalendar/core/locales/ko'
 import SalonSelect from '@/components/element/SalonSelect.vue'
 
 import ReservatoinRegist from '@/pages/schedule/reservation/ReservatoinRegist.vue'
-import { emptyUUID } from '@/references/config'
-import AlertService from '@/services/AlertService'
+import ReservationInfo from '@/pages/schedule/reservation/ReservationInfo.vue'
 
 onMounted(() => {
   if (decryptStringSalt(userStore.getUserRole) === 'MASTER') getCompanyList()
@@ -68,6 +70,7 @@ const userGuid = ref('')
 const userList = ref([])
 
 const fullCalendar = ref(null)
+const fullCalendarType = ref('dayGridMonth')
 const calendarMonthEvents = ref([])
 const calendarDayEvents = ref([])
 
@@ -83,8 +86,14 @@ const refreshAll = () => {
   calendarMonthEvents.value = []
   calendarDayEvents.value = []
 
+  calendarOptions.value.events = []
+
   if (decryptStringSalt(userStore.getUserRole) === 'MASTER') getCompanyList()
-  if (decryptStringSalt(userStore.getUserRole) !== 'MASTER') getUserList(companyGuid.value)
+  if (decryptStringSalt(userStore.getUserRole) !== 'MASTER') {
+    getUserList(companyGuid.value)
+    if (fullCalendarType.value === 'dayGridMonth') getReservationMonthList(companyGuid.value)
+    else getReservationDayList(searchStartDate.value, searchEndDate.value)
+  }
 }
 
 const handleDateClick = (ev) => {
@@ -110,6 +119,11 @@ const handleEventClick = (ev) => {
 
 const closeRegistModal = () => {
   isRegistModal.value = false
+  getReservationDayList(searchStartDate.value, searchEndDate.value)
+}
+const closeUpdateModal = () => {
+  isUpdateModal.value = false
+  getReservationDayList(searchStartDate.value, searchEndDate.value)
 }
 
 const calendarOptions = ref({
@@ -130,17 +144,21 @@ const calendarOptions = ref({
     const currentEnd = dayjs(info.view.currentEnd).subtract(1, 'day')
 
     if (info.view.type === 'dayGridMonth') {
+      calendarOptions.value.events = []
+      fullCalendarType.value = 'dayGridMonth'
       searchDate.value = currentStart.format('YYYY-MM')
       if(companyGuid.value !== emptyUUID) {
         getReservationMonthList(companyGuid.value)
-        calendarOptions.value.events = calendarMonthEvents.value
       }
     }
     else {
+      calendarOptions.value.events = []
+      fullCalendarType.value = 'other'
       searchStartDate.value = currentStart.format('YYYY-MM-DD')
       searchEndDate.value = currentEnd.format('YYYY-MM-DD')
-      // getApi
-      calendarOptions.value.events = calendarDayEvents.value
+      if (companyGuid.value !== emptyUUID) {
+        getReservationDayList(searchStartDate.value, searchEndDate.value)
+      }
     }
   }
 })
@@ -176,7 +194,8 @@ const getReservationMonthList = async (companyGuid) => {
   const reqHeader = { accept: 'application/json' }
   const reqParams = {
     'searchDate' : searchDate.value === '' ? currentDate : searchDate.value,
-    'companyGuid': companyGuid
+    'companyGuid': companyGuid,
+    'userGuid' : userGuid.value
   }
   const reservationList = await ApiService.requestAPI({
     headers: reqHeader,
@@ -185,24 +204,61 @@ const getReservationMonthList = async (companyGuid) => {
     params: reqParams
   })
   if (reservationList.retStatus) {
-    console.log(reservationList.retData)
     calendarMonthEvents.value = []
 
     for(const value of reservationList.retData) {
       let inputDate = value.reservationYear + '-' + value.reservationMonth + '-' + value.reservationDay
       let inputTitle = value.userName + ' - 예약 : ' + value.reservationCount + '건'
       
-      calendarOptions.value.events.push(
+      calendarMonthEvents.value.push(
         {date: inputDate, title: inputTitle, backgroundColor: '#22d3ee', borderColor: '#22d3ee'}
       )
     }
+    calendarOptions.value.events = calendarMonthEvents.value
+  }
+}
+
+const getReservationDayList = async (startDate, endDate) => {
+  const reqHeader = { accept: 'application/json' }
+  const reqParams = {
+    'startDate' : startDate,
+    'endDate' : endDate,
+    'companyGuid' : companyGuid.value,
+    'userGuid' : userGuid.value
+  }
+  const reservationList = await ApiService.requestAPI({
+    headers: reqHeader,
+    method: 'GET',
+    url: '/main/schedule/reservation/day/list',
+    params: reqParams
+  })
+  if (reservationList.retStatus) {
+    calendarDayEvents.value = []
+
+    for(const value of reservationList.retData) {
+      let inputTitle = value.userName + ' : ' + value.clientName + ' - ' + value.styleName
+      let inputStartTime = value.reservationYear + '-' + value.reservationMonth + '-' + value.reservationDay + 'T' + value.reservationHour + ':' + value.reservationMinute + ':00'
+      let inputEndTime = value.reservationYear + '-' + value.reservationMonth + '-' + value.reservationDay + 'T' + value.reservationEndHour + ':' + value.reservationEndMinute + ':00'
+      
+      calendarDayEvents.value.push(
+        {id: value.reservationGuid, title: inputTitle, start: inputStartTime, end: inputEndTime, backgroundColor: '#22d3ee', borderColor: '#22d3ee'}
+      )
+    }
+    calendarOptions.value.events = calendarDayEvents.value
   }
 }
 
 watch (() => companyGuid.value, (newVal) => {
   if (companyGuid.value !== emptyUUID) {
     getUserList(newVal)
-    getReservationMonthList(companyGuid.value)
+    if (fullCalendarType.value === 'dayGridMonth') getReservationMonthList(companyGuid.value)
+    else getReservationDayList(searchStartDate.value, searchEndDate.value)
+  }
+})
+watch (() => userGuid.value, () => {
+  if (userGuid.value !== emptyUUID) {
+    if (fullCalendarType.value === 'dayGridMonth') getReservationMonthList(companyGuid.value)
+    else getReservationDayList(searchStartDate.value, searchEndDate.value)
   }
 })
 

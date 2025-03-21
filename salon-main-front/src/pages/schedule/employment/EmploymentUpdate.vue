@@ -79,6 +79,10 @@ const employmentOptions = [
 ]
 
 const employmentUpdate = () => {
+  if (employmentOption.value === '') {
+    AlertService.normalAlertAction('근태여부를 확인해주세요.', '근태관리', '확인', 'error')
+    return
+  }
   employmentUpdateAction()
 }
 

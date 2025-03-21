@@ -3,7 +3,6 @@ package com.project.salon.main.api.controller.schedule;
 import com.project.salon.main.api.dto.common.AuditLogRegist;
 import com.project.salon.main.api.dto.common.ResponseMsg;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationRegist;
-import com.project.salon.main.api.dto.schedule.reservation.ReservationUpdate;
 import com.project.salon.main.api.service.component.AuditService;
 import com.project.salon.main.api.service.schedule.ReservationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,20 +33,6 @@ public class ReservationController {
         return ResponseMsg.successResponse("success");
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<ResponseMsg> reservationUpdate(@RequestBody ReservationUpdate reservationUpdate, HttpServletRequest req) {
-        AuditLogRegist auditLogRegist = AuditLogRegist.builder()
-                .accessToken(req.getHeader("Authorization"))
-                .controllerCategory(CONTROLLER_CATEGORY)
-                .controllerType("reservationUpdate")
-                .auditDetail(reservationUpdate)
-                .build();
-        auditService.auditRegist(auditLogRegist);
-
-        reservationService.reservationUpdate(reservationUpdate);
-        return ResponseMsg.successResponse("success");
-    }
-
     @DeleteMapping("/delete/{reservationGuid}")
     public ResponseEntity<ResponseMsg> reservationDelete(@PathVariable String reservationGuid, HttpServletRequest req) {
         AuditLogRegist auditLogRegist = AuditLogRegist.builder()
@@ -62,20 +47,35 @@ public class ReservationController {
         return ResponseMsg.successResponse("success");
     }
 
+    @GetMapping("/info/{reservationGuid}")
+    public ResponseEntity<ResponseMsg> reservationInfo(@PathVariable String reservationGuid, HttpServletRequest req) {
+        AuditLogRegist auditLogRegist = AuditLogRegist.builder()
+                .accessToken(req.getHeader("Authorization"))
+                .controllerCategory(CONTROLLER_CATEGORY)
+                .controllerType("reservationInfo")
+                .auditDetail(reservationGuid)
+                .build();
+        auditService.auditRegist(auditLogRegist);
+
+        return ResponseMsg.successResponse(reservationService.reservationInfo(reservationGuid));
+    }
+
     @GetMapping("/month/list")
     public ResponseEntity<ResponseMsg> reservationMonthList(
             @RequestParam String searchDate,
-            @RequestParam String companyGuid
+            @RequestParam String companyGuid,
+            @RequestParam String userGuid
     ) {
-        return ResponseMsg.successResponse(reservationService.reservationMonthList(searchDate, companyGuid));
+        return ResponseMsg.successResponse(reservationService.reservationMonthList(searchDate, companyGuid, userGuid));
     }
 
     @GetMapping("/day/list")
     public ResponseEntity<ResponseMsg> reservationDayList(
             @RequestParam String startDate,
             @RequestParam String endDate,
-            @RequestParam String companyGuid
+            @RequestParam String companyGuid,
+            @RequestParam String userGuid
     ) {
-        return ResponseMsg.successResponse(reservationService.reservationDayList(startDate, endDate, companyGuid));
+        return ResponseMsg.successResponse(reservationService.reservationDayList(startDate, endDate, companyGuid, userGuid));
     }
 }

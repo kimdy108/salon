@@ -80,6 +80,19 @@ const employmentOptions = [
 ]
 
 const employmentRegist = () => {
+    if (companyGuid.value === '') {
+      AlertService.normalAlertAction('고객사를 확인해주세요.', '근태관리', '확인', 'error')
+      return
+    }
+    if (userGuid.value === '') {
+      AlertService.normalAlertAction('사용자를 확인해주세요.', '근태관리', '확인', 'error')
+      return
+    }
+    if (employmentOption.value === '') {
+      AlertService.normalAlertAction('근태여부를 확인해주세요.', '근태관리', '확인', 'error')
+      return
+    }
+
     employmentRegistAction()
 }
 

@@ -3,7 +3,9 @@ package com.project.salon.main.api.service.schedule;
 import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.manage.SalonCompany;
 import com.project.salon.main.api.domain.schedule.SalonEmployment;
+import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
+import com.project.salon.main.api.dto.constant.schedule.EmploymentCategory;
 import com.project.salon.main.api.dto.schedule.employment.EmploymentInfo;
 import com.project.salon.main.api.dto.schedule.employment.EmploymentList;
 import com.project.salon.main.api.dto.schedule.employment.EmploymentRegist;
@@ -12,6 +14,7 @@ import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.manage.SalonCompanyRepository;
 import com.project.salon.main.api.repository.schedule.SalonEmploymentRepository;
 import com.project.salon.main.api.repository.schedule.SalonEmploymentRepositoryImpl;
+import com.project.salon.main.api.repository.schedule.SalonReservationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ public class EmploymentService {
     private final SalonCompanyRepository salonCompanyRepository;
     private final SalonAdminRepository salonAdminRepository;
     private final SalonEmploymentRepository salonEmploymentRepository;
+    private final SalonReservationRepository salonReservationRepository;
 
     private final SalonEmploymentRepositoryImpl salonEmploymentRepositoryImpl;
 
@@ -67,6 +71,11 @@ public class EmploymentService {
         SalonEmployment salonEmployment = salonEmploymentRepository.findSalonEmploymentByEmploymentGuid(employmentUpdate.getEmploymentGuid());
         if (salonEmployment == null) throw new RuntimeException("근태 정보가 존재하지 않습니다.");
 
+        if (employmentUpdate.getEmploymentCategory() != EmploymentCategory.EMPOLYMENT) {
+            SalonReservation salonReservation = salonReservationRepository.findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDay(salonEmployment.getAdminGuid(), salonEmployment.getEmploymentYear(), salonEmployment.getEmploymentMonth(), salonEmployment.getEmploymentDay());
+            if (salonReservation != null) throw new RuntimeException("예약 정보가 있습니다.");
+        }
+
         salonEmployment.update(
                 employmentUpdate.getEmploymentCategory(),
                 LocalDateTime.now(),
@@ -78,6 +87,9 @@ public class EmploymentService {
     public void employmentDelete (String employmentGuid) {
         SalonEmployment salonEmployment = salonEmploymentRepository.findSalonEmploymentByEmploymentGuid(UUID.fromString(employmentGuid));
         if (salonEmployment == null) throw new RuntimeException("근태 정보가 존재하지 않습니다.");
+
+        SalonReservation salonReservation = salonReservationRepository.findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDay(salonEmployment.getAdminGuid(), salonEmployment.getEmploymentYear(), salonEmployment.getEmploymentMonth(), salonEmployment.getEmploymentDay());
+        if (salonReservation != null) throw new RuntimeException("예약 정보가 있습니다.");
 
         salonEmploymentRepository.delete(salonEmployment);
     }

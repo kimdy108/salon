@@ -8,10 +8,7 @@ import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.domain.setting.SalonStyle;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.dto.constant.schedule.EmploymentCategory;
-import com.project.salon.main.api.dto.schedule.reservation.ReservationDayList;
-import com.project.salon.main.api.dto.schedule.reservation.ReservationMonthList;
-import com.project.salon.main.api.dto.schedule.reservation.ReservationRegist;
-import com.project.salon.main.api.dto.schedule.reservation.ReservationUpdate;
+import com.project.salon.main.api.dto.schedule.reservation.*;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.manage.SalonCompanyRepository;
 import com.project.salon.main.api.repository.schedule.SalonEmploymentRepository;
@@ -26,6 +23,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+
+import static com.project.salon.main.api.utils.Common.EMPTY_UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -71,12 +70,13 @@ public class ReservationService {
                     LocalTime startTime = reservationTime.plusMinutes(30 * i);
                     LocalTime endTime = startTime.plusMinutes(30);
 
-                    SalonReservation salonReservation = salonReservationRepository.findSalonReservationByReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(
+                    SalonReservation salonReservation = salonReservationRepository.findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(
+                            reservationRegist.getUserGuid(),
                             dateArray[0],
                             dateArray[1],
                             dateArray[2],
-                            String.valueOf(startTime.getHour()),
-                            String.valueOf(startTime.getMinute())
+                            String.format("%02d", startTime.getHour()),
+                            String.format("%02d", startTime.getMinute())
                     );
                     if (salonReservation != null) throw new RuntimeException("예약 시간 중복입니다.");
 
@@ -90,10 +90,10 @@ public class ReservationService {
                             .reservationYear(dateArray[0])
                             .reservationMonth(dateArray[1])
                             .reservationDay(dateArray[2])
-                            .reservationHour(String.valueOf(startTime.getHour()))
-                            .reservationMinute(String.valueOf(startTime.getMinute()))
-                            .reservationEndHour(String.valueOf(endTime.getHour()))
-                            .reservationEndMinute(String.valueOf(endTime.getMinute()))
+                            .reservationHour(String.format("%02d", startTime.getHour()))
+                            .reservationMinute(String.format("%02d", startTime.getMinute()))
+                            .reservationEndHour(String.format("%02d", endTime.getHour()))
+                            .reservationEndMinute(String.format("%02d", endTime.getMinute()))
                             .clientName(reservationRegist.getClientName())
                             .clientNumber(reservationRegist.getClientNumber())
                             .isActive(IsYesNo.YES)
@@ -111,12 +111,13 @@ public class ReservationService {
             for (int i = 0; i < salonStyle.getStyleDuration() / 30; i++) {
                 LocalTime validationTime = startTime.plusMinutes(30 * i);
 
-                SalonReservation salonReservation = salonReservationRepository.findSalonReservationByReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(
+                SalonReservation salonReservation = salonReservationRepository.findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(
+                        reservationRegist.getUserGuid(),
                         dateArray[0],
                         dateArray[1],
                         dateArray[2],
-                        String.valueOf(validationTime.getHour()),
-                        String.valueOf(validationTime.getMinute())
+                        String.format("%02d", validationTime.getHour()),
+                        String.format("%02d", validationTime.getMinute())
                 );
                 if (salonReservation != null) throw new RuntimeException("예약 시간 중복입니다.");
             }
@@ -133,8 +134,8 @@ public class ReservationService {
                     .reservationDay(dateArray[2])
                     .reservationHour(timeArray[0])
                     .reservationMinute(timeArray[1])
-                    .reservationEndHour(String.valueOf(endTime.getHour()))
-                    .reservationEndMinute(String.valueOf(endTime.getMinute()))
+                    .reservationEndHour(String.format("%02d", endTime.getHour()))
+                    .reservationEndMinute(String.format("%02d", endTime.getMinute()))
                     .clientName(reservationRegist.getClientName())
                     .clientNumber(reservationRegist.getClientNumber())
                     .isActive(IsYesNo.YES)
@@ -147,20 +148,6 @@ public class ReservationService {
     }
 
     @Transactional
-    public void reservationUpdate(ReservationUpdate reservationUpdate) {
-        reservationDelete(reservationUpdate.getReservationGuid().toString());
-
-        reservationRegist(new ReservationRegist(
-                reservationUpdate.getUserGuid(),
-                reservationUpdate.getStyleGuid(),
-                reservationUpdate.getReservationDate(),
-                reservationUpdate.getClientName(),
-                reservationUpdate.getClientNumber(),
-                reservationUpdate.getDescriptionNote()
-        ));
-    }
-
-    @Transactional
     public void reservationDelete(String reservationGuid) {
         SalonReservation salonReservation = salonReservationRepository.findSalonReservationByReservationGuid(UUID.fromString(reservationGuid));
         if (salonReservation == null) throw new RuntimeException("존재하지 않은 예약입니다.");
@@ -168,20 +155,31 @@ public class ReservationService {
         salonReservationRepository.deleteByReservationPartnerGuid(salonReservation.getReservationPartnerGuid());
     }
 
-    public List<ReservationMonthList> reservationMonthList (String searchDate, String companyGuid) {
+    public ReservationInfo reservationInfo(String reservationInfo) {
+        SalonReservation salonReservation = salonReservationRepository.findSalonReservationByReservationGuid(UUID.fromString(reservationInfo));
+        if (salonReservation == null) throw new RuntimeException("등록된 예약이 없습니다.");
+
+        return salonReservationRepositoryImpl.findReservationInfo(UUID.fromString(reservationInfo));
+    }
+
+    public List<ReservationMonthList> reservationMonthList (String searchDate, String companyGuid, String userGuid) {
         String[] dateArray = searchDate.split("-");
         if (dateArray.length != 2) throw new RuntimeException("날짜 데이터가 정확하지 않습니다.");
 
-        return salonReservationRepositoryImpl.findReservationByMonth(dateArray[0], dateArray[1], UUID.fromString(companyGuid));
+        if (userGuid == null || userGuid.isEmpty()) userGuid = EMPTY_UUID.toString();
+
+        return salonReservationRepositoryImpl.findReservationByMonth(dateArray[0], dateArray[1], UUID.fromString(companyGuid), UUID.fromString(userGuid));
     }
 
-    public List<ReservationDayList> reservationDayList (String startDate, String endDate, String companyGuid) {
+    public List<ReservationDayList> reservationDayList (String startDate, String endDate, String companyGuid, String userGuid) {
         String[] startDateArray = startDate.split("-");
         if (startDateArray.length != 3) throw new RuntimeException("날짜 데이터가 정확하지 않습니다.");
 
         String[] endDateArray = endDate.split("-");
         if (endDateArray.length != 3) throw new RuntimeException("날짜 데이터가 정확하지 않습니다.");
 
-        return salonReservationRepositoryImpl.findReservationByDay(startDateArray[0], startDateArray[1], startDateArray[2], endDateArray[0], endDateArray[1], endDateArray[2], UUID.fromString(companyGuid));
+        if (userGuid == null || userGuid.isEmpty()) userGuid = EMPTY_UUID.toString();
+
+        return salonReservationRepositoryImpl.findReservationByDay(startDateArray[0], startDateArray[1], startDateArray[2], endDateArray[0], endDateArray[1], endDateArray[2], UUID.fromString(companyGuid), UUID.fromString(userGuid));
     }
 }

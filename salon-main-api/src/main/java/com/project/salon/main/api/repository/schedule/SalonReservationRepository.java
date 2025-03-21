@@ -12,7 +12,8 @@ import java.util.UUID;
 @Repository
 public interface SalonReservationRepository extends JpaRepository<SalonReservation, Long> {
     SalonReservation findSalonReservationByReservationGuid(UUID reservationGuid);
-    SalonReservation findSalonReservationByReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(String reservationYear, String reservationMonth, String reservationDay, String reservationHour, String reservationMinute);
+    SalonReservation findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDay(UUID reservationGuid, String reservationYear, String reservationMonth, String reservationDay);
+    SalonReservation findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(UUID adminGuid, String reservationYear, String reservationMonth, String reservationDay, String reservationHour, String reservationMinute);
 
     @Query("delete from SalonReservation where reservationPartnerGuid = :reservationPartnerGuid")
     @Modifying

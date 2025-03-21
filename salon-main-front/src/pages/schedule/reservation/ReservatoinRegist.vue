@@ -47,6 +47,8 @@ import ApiService from '@/services/ApiService'
 
 import SalonInput from '@/components/element/SalonInput.vue'
 import SalonSelect from '@/components/element/SalonSelect.vue'
+import SalonTextArea from '@/components/element/SalonTextArea.vue'
+import { nameReg, phoneReg } from '@/references/config'
 
 const props = defineProps(['showModal', 'targetDate', 'userGuid'])
 const emit = defineEmits(['closeRegistModal'])
@@ -64,7 +66,6 @@ const clientNumber = ref('')
 const descriptionNote = ref('')
 
 const initData = () => {
-  console.log(props.targetDate.split('T')[0])
   reservationDate.value = props.targetDate.split('T')[0]
   reservationTime.value = props.targetDate.split('T')[1].split('+')[0]
   styleList.value = []
@@ -77,6 +78,19 @@ const initData = () => {
 }
 
 const reservationRegist = () => {
+  if (styleGuid.value === '') {
+    AlertService.normalAlertAction('스타일을 확인해주세요.', '예약관리', '확인', 'error')
+    return
+  }
+  if (!nameReg.test(clientName.value)) {
+    AlertService.normalAlertAction('예약자 성함을 확인해주세요.', '예약관리', '확인', 'error')
+    return
+  }
+  if (!phoneReg.test(clientNumber.value)) {
+    AlertService.normalAlertAction('예약자 번호을 확인해주세요.', '예약관리', '확인', 'error')
+    return
+  }
+
   reservationRegistAction()
 }
 
