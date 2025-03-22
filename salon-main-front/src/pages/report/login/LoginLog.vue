@@ -60,6 +60,9 @@ import SalonTable from '@/components/element/SalonTable.vue';
 
 onMounted(() => {
   getLoginLogList()
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const userStore = useUserStore()

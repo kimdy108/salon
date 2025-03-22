@@ -155,11 +155,11 @@ public class ReservationService {
         salonReservationRepository.deleteByReservationPartnerGuid(salonReservation.getReservationPartnerGuid());
     }
 
-    public ReservationInfo reservationInfo(String reservationInfo) {
-        SalonReservation salonReservation = salonReservationRepository.findSalonReservationByReservationGuid(UUID.fromString(reservationInfo));
+    public ReservationInfo reservationInfo(String reservationGuid) {
+        SalonReservation salonReservation = salonReservationRepository.findSalonReservationByReservationGuid(UUID.fromString(reservationGuid));
         if (salonReservation == null) throw new RuntimeException("등록된 예약이 없습니다.");
 
-        return salonReservationRepositoryImpl.findReservationInfo(UUID.fromString(reservationInfo));
+        return salonReservationRepositoryImpl.findReservationInfo(UUID.fromString(reservationGuid));
     }
 
     public List<ReservationMonthList> reservationMonthList (String searchDate, String companyGuid, String userGuid) {

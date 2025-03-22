@@ -67,7 +67,7 @@ const dashBoardItems = [
 
 const manageItem = [
   { id: '5242b009-d22c-440f-ac6d-4e24a11311dc', path: '/salon/manage/company', label: '고객사 관리', name: 'CompanyAdmin', role: ['MASTER'] },
-  { id: '151fea10-9564-4508-bb1a-917f51d43ee8', path: '/salon/manage/user', label: '사용자 관리', name: 'UserAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '151fea10-9564-4508-bb1a-917f51d43ee8', path: '/salon/manage/user', label: '사용자 관리', name: 'UserAdmin', role: ['MASTER', 'ADMIN','MANAGER'] },
 ]
 
 const scheduleItem = [
@@ -77,20 +77,20 @@ const scheduleItem = [
 
 const settingItem = [
   { id: 'ebf38c16-e4a6-4b91-a2fe-b2be07376992', path: '/salon/setting/style', label: '스타일', name: 'StyleAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
-  { id: '4f0f2429-8822-4386-a437-ac8a0aa944a1', path: '/salon/setting/system', label: '시스템설정', name: 'SystemAdmin', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '4f0f2429-8822-4386-a437-ac8a0aa944a1', path: '/salon/setting/system', label: '시스템설정', name: 'SystemAdmin', role: ['MASTER', 'ADMIN','MANAGER'] },
 ]
 
 const reportItem = [
   { id: '5adbc1ae-fb8a-4609-b87b-4c6566dce054', path: '/salon/report/audit', label: '감사 로그', name: 'AuditLog', role: ['MASTER'] },
-  { id: '730a33e8-4f06-4759-b6a9-0ee2ceaaebc6', path: '/salon/report/login', label: '로그인 로그', name: 'LoginLog', role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '730a33e8-4f06-4759-b6a9-0ee2ceaaebc6', path: '/salon/report/login', label: '로그인 로그', name: 'LoginLog', role: ['MASTER', 'ADMIN','MANAGER'] },
 ]
 
 const navItems = [
   { id: '729d5b14-af2c-4833-a535-efc4913518dd', path: '/salon/dashboard', label: 'DashBoard', child: dashBoardItems, role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
-  { id: '1bf7978a-b5e6-4a63-a85d-5a88126e2386', path: '/salon/manage', label: 'Manage', child: manageItem, role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: '1bf7978a-b5e6-4a63-a85d-5a88126e2386', path: '/salon/manage', label: 'Manage', child: manageItem, role: ['MASTER', 'ADMIN','MANAGER'] },
   { id: '82a7454f-2a99-4dbe-acb3-592350305afc', path: '/salon/schedule', label: 'Schedule', child: scheduleItem, role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
   { id: '89ce841e-29d1-4f6e-927a-687bd3a78e95', path: '/salon/setting', label: 'Setting', child: settingItem, role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
-  { id: 'dd3270ff-cf5b-4a74-8141-3789ef0194f5', path: '/salon/report', label: 'Report', child: reportItem, role: ['MASTER', 'ADMIN','MANAGER','MEMBER'] },
+  { id: 'dd3270ff-cf5b-4a74-8141-3789ef0194f5', path: '/salon/report', label: 'Report', child: reportItem, role: ['MASTER', 'ADMIN','MANAGER'] },
 ]
 
 const goMenu = (item) => {

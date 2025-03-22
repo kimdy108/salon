@@ -54,6 +54,9 @@ import { Select } from 'primevue';
 
 onMounted(() => {
   getCompanyList()
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const searchCategory = ref('companyName')

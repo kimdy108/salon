@@ -18,7 +18,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "salon_reservation", indexes = {
         @Index(name = "idx_reservation_guid", columnList = "reservation_guid"),
-        @Index(name = "idx_admin_guid", columnList = "admin_guid")
+        @Index(name = "idx_admin_guid", columnList = "admin_guid"),
+        @Index(name = "idx_style_guid", columnList = "style_guid"),
+        @Index(name = "idx_reservation_partner_guid", columnList = "reservation_partner_guid")
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

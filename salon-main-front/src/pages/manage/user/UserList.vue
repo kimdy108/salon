@@ -56,6 +56,7 @@ import UserUpdate from '@/pages/manage/user/UserUpdate.vue'
 import UserUpdatePassword from '@/pages/manage/user/UserUpdatePassword.vue'
 
 import { Select } from 'primevue';
+import { userRoleList } from '@/references/config';
 
 onMounted(() => {
   getUserList()
@@ -172,8 +173,12 @@ const getUserList = async () => {
     params: reqParams
   })
   if (userResult.retStatus) {
-    contents.value = userResult.retData.content
-    totalCount.value = userResult.retData.totalElements
+    let idx = userRoleList.findIndex(x => x.value == decryptStringSalt(userStore.getUserRole))
+    contents.value = userResult.retData.content.filter(user => {
+      let userRoleIdx = userRoleList.findIndex(x => x.value === user.userRole)
+      return userRoleIdx >= idx
+    })
+    totalCount.value = contents.value.length
   }
 }
 

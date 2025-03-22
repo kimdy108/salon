@@ -45,6 +45,9 @@ import { emptyUUID } from '@/references/config';
 onMounted(() => {
   getEmploymentList(currentDate)
   if (decryptStringSalt(userStore.getUserRole) === 'MASTER') getCompanyList()
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const userStore = useUserStore()

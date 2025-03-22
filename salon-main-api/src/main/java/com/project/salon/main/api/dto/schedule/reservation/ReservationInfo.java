@@ -11,8 +11,14 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ReservationInfo {
     UUID reservationGuid;
-    String userName;
+    String reservationYear;
+    String reservationMonth;
+    String reservationDay;
+    String reservationHour;
+    String reservationMinute;
     String styleName;
+    int styleDuration;
     String clientName;
     String clientNumber;
+    String descriptionNote;
 }

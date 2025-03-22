@@ -58,6 +58,9 @@ import AlertService from '@/services/AlertService';
 
 onMounted(() => {
   getStyleList()
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const userStore = useUserStore()

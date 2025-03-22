@@ -19,7 +19,7 @@
     </div>
 
     <ReservatoinRegist :showModal="isRegistModal" :targetDate="targetDate" :userGuid="userGuid" @closeRegistModal="closeRegistModal"></ReservatoinRegist>
-    <ReservationInfo :showModal="isUpdateModal" :targetDate="targetDate" :userGuid="userGuid" :updateGuid="updateGuid" @closeUpdateModal="closeUpdateModal"></ReservationInfo>
+    <ReservationInfo :showModal="isInfoModal" :infoGuid="infoGuid" @closeInfoModal="closeInfoModal"></ReservationInfo>
 
   </div>
 </template>
@@ -51,6 +51,9 @@ onMounted(() => {
     getUserList(companyGuid.value)
     getReservationMonthList(companyGuid.value)
   }
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const userStore = useUserStore()
@@ -61,8 +64,8 @@ const searchStartDate = ref('')
 const searchEndDate = ref('')
 
 const isRegistModal = ref(false)
-const isUpdateModal = ref(false)
-const updateGuid = ref('')
+const isInfoModal = ref(false)
+const infoGuid = ref('')
 const targetDate = ref('')
 const companyGuid = ref(decryptStringSalt(userStore.getCurrentUser.ucg))
 const companyList = ref([])
@@ -75,7 +78,7 @@ const calendarMonthEvents = ref([])
 const calendarDayEvents = ref([])
 
 const refreshAll = () => {
-  updateGuid.value = ''
+  infoGuid.value = ''
   targetDate.value = ''
   companyGuid.value = decryptStringSalt(userStore.getCurrentUser.ucg)
   companyList.value = []
@@ -113,16 +116,16 @@ const handleEventClick = (ev) => {
     fullCalendar.value.getApi().changeView('timeGridDay', ev.event.start)
     return
   }
-  updateGuid.value = ev.event.id
-  isUpdateModal.value = true
+  infoGuid.value = ev.event.id
+  isInfoModal.value = true
 }
 
 const closeRegistModal = () => {
   isRegistModal.value = false
   getReservationDayList(searchStartDate.value, searchEndDate.value)
 }
-const closeUpdateModal = () => {
-  isUpdateModal.value = false
+const closeInfoModal = () => {
+  isInfoModal.value = false
   getReservationDayList(searchStartDate.value, searchEndDate.value)
 }
 

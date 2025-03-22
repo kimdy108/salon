@@ -40,10 +40,16 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
                 .select(Projections.fields(
                         ReservationInfo.class,
                         qSalonReservation.reservationGuid.as("reservationGuid"),
-                        qSalonAdmin.adminName.as("userName"),
+                        qSalonReservation.reservationYear.as("reservationYear"),
+                        qSalonReservation.reservationMonth.as("reservationMonth"),
+                        qSalonReservation.reservationDay.as("reservationDay"),
+                        qSalonReservation.reservationHour.as("reservationHour"),
+                        qSalonReservation.reservationMinute.as("reservationMinute"),
                         qSalonStyle.styleName.as("styleName"),
+                        qSalonStyle.styleDuration.as("styleDuration"),
                         qSalonReservation.clientName.as("clientName"),
-                        qSalonReservation.clientNumber.as("clientNumber")
+                        qSalonReservation.clientNumber.as("clientNumber"),
+                        qSalonReservation.descriptionNote.as("descriptionNote")
                 ))
                 .from(qSalonReservation)
                 .innerJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))

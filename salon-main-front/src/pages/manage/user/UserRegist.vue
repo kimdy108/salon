@@ -120,7 +120,11 @@ const userRegist = () => {
     return
   }
   if(!emailReg.test(userEmail.value)) {
-    AlertService.normalAlertAction('이메일을 확인해줏요.', '사용자관리', '확인', 'error')
+    AlertService.normalAlertAction('이메일을 확인해주세요.', '사용자관리', '확인', 'error')
+    return
+  }
+  if(userRole.value === '' || userRole.value === null) {
+    AlertService.normalAlertAction('권한을 확인해주세요.', '사용자관리', '확인', 'error')
     return
   }
   userRegistAction()

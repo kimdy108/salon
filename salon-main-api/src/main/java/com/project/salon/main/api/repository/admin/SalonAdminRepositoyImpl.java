@@ -3,6 +3,7 @@ package com.project.salon.main.api.repository.admin;
 import com.project.salon.main.api.domain.admin.QSalonAdmin;
 import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
+import com.project.salon.main.api.dto.admin.AdminInfo;
 import com.project.salon.main.api.dto.constant.admin.AdminRole;
 import com.project.salon.main.api.dto.manage.master.MasterInfo;
 import com.project.salon.main.api.dto.manage.master.MasterList;
@@ -170,6 +171,26 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                 ))
                 .from(qSalonAdmin)
                 .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .where(bb)
+                .fetchOne();
+    }
+
+    public AdminInfo findAdminInfo(UUID adminGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonAdmin.adminGuid.eq(adminGuid));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        AdminInfo.class,
+                        qSalonAdmin.adminGuid.as("adminGuid"),
+                        qSalonAdmin.adminRole.as("adminRole"),
+                        qSalonAdmin.adminID.as("adminID"),
+                        qSalonAdmin.adminName.as("adminName"),
+                        qSalonAdmin.adminPhone.as("adminPhone"),
+                        qSalonAdmin.adminEmail.as("adminEmail"),
+                        qSalonAdmin.descriptionNote.as("descriptionNote")
+                ))
+                .from(qSalonAdmin)
                 .where(bb)
                 .fetchOne();
     }

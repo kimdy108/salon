@@ -63,6 +63,9 @@ import AuditLogInfo from './AuditLogInfo.vue';
 
 onMounted(() => {
   getAuditLogList()
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const searchCategory = ref('userName')

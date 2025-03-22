@@ -45,6 +45,9 @@ import { decryptStringSalt } from '@/utils/common'
 
 onMounted(() => {
   userRole.value = decryptStringSalt(userStore.getUserRole)
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const userStore = useUserStore()
