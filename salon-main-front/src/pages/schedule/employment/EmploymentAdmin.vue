@@ -62,7 +62,7 @@ const companyGuid = ref(decryptStringSalt(userStore.getCurrentUser.ucg))
 const companyList = ref([])
 
 const eventBgColor = (val) => {
-  if (val === 'EMPOLYMENT') return '#22d3ee'
+  if (val === 'EMPLOYMENT') return '#22d3ee'
   if (val === 'HOLIDAY') return '#f87171'
   if (val === 'VACATION') return '#c084fc'
   if (val === 'SICKLEAVE') return '#4ade80'
@@ -70,7 +70,7 @@ const eventBgColor = (val) => {
 }
 
 const eventCategory = (val) => {
-  if (val === 'EMPOLYMENT') return '근무'
+  if (val === 'EMPLOYMENT') return '근무'
   if (val === 'HOLIDAY') return '휴무'
   if (val === 'VACATION') return '연차'
   if (val === 'SICKLEAVE') return '병가'

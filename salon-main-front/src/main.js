@@ -13,6 +13,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura'
 
 import 'primeicons/primeicons.css'
+import ToastService from 'primevue/toastservice';
 
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
@@ -35,5 +36,6 @@ app.use(PrimeVue, {
     }
   }
 })
+app.use(ToastService)
 app.config.globalProperties.$_dayjs = dayjs
 app.mount('#app')

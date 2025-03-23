@@ -72,7 +72,7 @@ const initData = () => {
 }
 
 const employmentOptions = [
-    { key : 'EMPOLYMENT', value : '근무'},
+    { key : 'EMPLOYMENT', value : '근무'},
     { key : 'HOLIDAY', value : '휴무'},
     { key : 'VACATION', value : '연차'},
     { key : 'SICKLEAVE', value : '병가'},

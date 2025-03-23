@@ -6,8 +6,10 @@ import com.project.salon.main.api.domain.manage.SalonCompany;
 import com.project.salon.main.api.domain.schedule.SalonEmployment;
 import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.domain.setting.SalonStyle;
+import com.project.salon.main.api.domain.setting.SalonSystem;
 import com.project.salon.main.api.dto.constant.common.IsYesNo;
 import com.project.salon.main.api.dto.constant.schedule.EmploymentCategory;
+import com.project.salon.main.api.dto.constant.system.HoursCategory;
 import com.project.salon.main.api.dto.schedule.reservation.*;
 import com.project.salon.main.api.repository.admin.SalonAdminRepository;
 import com.project.salon.main.api.repository.manage.SalonCompanyRepository;
@@ -15,12 +17,16 @@ import com.project.salon.main.api.repository.schedule.SalonEmploymentRepository;
 import com.project.salon.main.api.repository.schedule.SalonReservationRepository;
 import com.project.salon.main.api.repository.schedule.SalonReservationRepositoryImpl;
 import com.project.salon.main.api.repository.setting.SalonStyleRepository;
+import com.project.salon.main.api.repository.setting.SalonSystemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +41,7 @@ public class ReservationService {
     private final SalonStyleRepository salonStyleRepository;
     private final SalonEmploymentRepository salonEmploymentRepository;
     private final SalonReservationRepository salonReservationRepository;
+    private final SalonSystemRepository salonSystemRepository;
 
     private final SalonReservationRepositoryImpl salonReservationRepositoryImpl;
 
@@ -50,9 +57,16 @@ public class ReservationService {
         String[] timeArray = reservationRegist.getReservationDate().split("T")[1].replace("+09:00", "").split(":");
         if (timeArray.length != 3) throw new RuntimeException("시간 데이터에 오류가 있습니다.");
 
+        LocalDate employmentDate = LocalDate.parse(reservationRegist.getReservationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        DayOfWeek dayOfWeek = employmentDate.getDayOfWeek();
+        SalonSystem salonSystem = salonSystemRepository.findSalonSystemByCompanyGuidAndDayOfWeek(salonAdmin.getCompanyGuid(), dayOfWeek);
+        if (salonSystem == null) throw new RuntimeException("영업일이 아닙니다.");
+        if (salonSystem.getHoursCategory() != HoursCategory.EMPLOYMENT) throw new RuntimeException("영업일이 아닙니다.");
+        if (checkStartTime(salonSystem, timeArray)) throw new RuntimeException("영업시간이 아닙니다.");
+
         SalonEmployment salonEmployment = salonEmploymentRepository.findSalonEmploymentByAdminSeqAndEmploymentYearAndEmploymentMonthAndEmploymentDay(salonAdmin.getSeq(), dateArray[0], dateArray[1], dateArray[2]);
         if (salonEmployment == null) throw new RuntimeException("근무일이 아닙니다.");
-        if (!EmploymentCategory.EMPOLYMENT.equals(salonEmployment.getEmploymentCategory())) throw new RuntimeException("근무일이 아닙니다.");
+        if (!EmploymentCategory.EMPLOYMENT.equals(salonEmployment.getEmploymentCategory())) throw new RuntimeException("근무일이 아닙니다.");
 
         SalonStyle salonStyle = salonStyleRepository.findSalonStyleByStyleGuid(reservationRegist.getStyleGuid());
         if (salonStyle == null) throw new RuntimeException("스타일이 존재하지 않습니다.");
@@ -69,6 +83,8 @@ public class ReservationService {
                     LocalTime reservationTime = LocalTime.parse(reservationRegist.getReservationDate().split("T")[1].replace("+09:00", ""));
                     LocalTime startTime = reservationTime.plusMinutes(30 * i);
                     LocalTime endTime = startTime.plusMinutes(30);
+
+                    if (checkEndTime(salonSystem, endTime)) throw new RuntimeException("마감시간입니다.");
 
                     SalonReservation salonReservation = salonReservationRepository.findSalonReservationByAdminGuidAndReservationYearAndReservationMonthAndReservationDayAndReservationHourAndReservationMinute(
                             reservationRegist.getUserGuid(),
@@ -107,6 +123,8 @@ public class ReservationService {
         } else {
             LocalTime startTime = LocalTime.parse(reservationRegist.getReservationDate().split("T")[1].replace("+09:00", ""));
             LocalTime endTime = startTime.plusMinutes(salonStyle.getStyleDuration());
+
+            if (checkEndTime(salonSystem, endTime)) throw new RuntimeException("마감시간입니다.");
 
             for (int i = 0; i < salonStyle.getStyleDuration() / 30; i++) {
                 LocalTime validationTime = startTime.plusMinutes(30 * i);
@@ -181,5 +199,21 @@ public class ReservationService {
         if (userGuid == null || userGuid.isEmpty()) userGuid = EMPTY_UUID.toString();
 
         return salonReservationRepositoryImpl.findReservationByDay(startDateArray[0], startDateArray[1], startDateArray[2], endDateArray[0], endDateArray[1], endDateArray[2], UUID.fromString(companyGuid), UUID.fromString(userGuid));
+    }
+
+    public boolean checkStartTime(SalonSystem salonSystem, String[] timeArray) {
+        boolean result = Integer.parseInt(salonSystem.getStartTimeHour()) > Integer.parseInt(timeArray[0]);
+
+        if (!result && (Integer.parseInt(salonSystem.getStartTimeHour()) == Integer.parseInt(timeArray[0]) && Integer.parseInt(salonSystem.getStartTimeMinute()) > Integer.parseInt(timeArray[1]))) result = true;
+
+        return result;
+    }
+
+    public boolean checkEndTime(SalonSystem salonSystem, LocalTime timeValue) {
+        boolean result = Integer.parseInt(salonSystem.getEndTimeHour()) < Integer.parseInt(String.format("%02d", timeValue.getHour()));
+
+        if (!result && (Integer.parseInt(salonSystem.getEndTimeHour()) == Integer.parseInt(String.format("%02d", timeValue.getHour())) && Integer.parseInt(salonSystem.getEndTimeMinute()) <= Integer.parseInt(String.format("%02d", timeValue.getMinute())))) result = true;
+
+        return result;
     }
 }

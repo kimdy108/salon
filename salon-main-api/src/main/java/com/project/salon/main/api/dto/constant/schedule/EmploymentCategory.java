@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Accessors(fluent = true)
 public enum EmploymentCategory {
-    EMPOLYMENT("근무"),
+    EMPLOYMENT("근무"),
     HOLIDAY("휴무"),
     VACATION("연차"),
     SICKLEAVE("병가"),
