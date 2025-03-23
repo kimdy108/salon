@@ -57,7 +57,7 @@ public class EmploymentService {
 
         SalonSystem salonSystem = salonSystemRepository.findSalonSystemByCompanyGuidAndDayOfWeek(employmentRegist.getCompanyGuid(), dayOfWeek);
         if (salonSystem == null) throw new RuntimeException("영업시간 정보가 없습니다.");
-        if (salonSystem.getHoursCategory() != HoursCategory.EMPLOYMENT) throw new RuntimeException("휴무일 입니다.");
+        if (employmentRegist.getEmploymentCategory() == EmploymentCategory.EMPLOYMENT && salonSystem.getHoursCategory() != HoursCategory.EMPLOYMENT) throw new RuntimeException("휴무일 입니다.");
 
         SalonEmployment salonEmployment = salonEmploymentRepository.findSalonEmploymentByAdminSeqAndEmploymentYearAndEmploymentMonthAndEmploymentDay(salonAdmin.getSeq(), dateArray[0], dateArray[1], dateArray[2]);
         if (salonEmployment != null) throw new RuntimeException("등록된 근태 정보가 있습니다.");

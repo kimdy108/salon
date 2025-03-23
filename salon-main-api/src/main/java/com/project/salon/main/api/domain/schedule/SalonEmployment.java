@@ -46,7 +46,7 @@ public class SalonEmployment extends SalonCommonBase {
     private String employmentDay;
 
     @Comment("근태 종류")
-    @Column(name = "employment_category", columnDefinition = "ENUM('EMPLOYMENT','HOLIDAY','VACATION','SICKLEAVE','OFFICIALVACATION') NOT NULL DEFAULT 'EMPOLYMENT'")
+    @Column(name = "employment_category", columnDefinition = "ENUM('EMPLOYMENT','HOLIDAY','VACATION','SICKLEAVE','OFFICIALVACATION') NOT NULL DEFAULT 'EMPLOYMENT'")
     @Enumerated(EnumType.STRING)
     private EmploymentCategory employmentCategory;
 

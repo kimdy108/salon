@@ -57,7 +57,7 @@ public class ReservationService {
         String[] timeArray = reservationRegist.getReservationDate().split("T")[1].replace("+09:00", "").split(":");
         if (timeArray.length != 3) throw new RuntimeException("시간 데이터에 오류가 있습니다.");
 
-        LocalDate employmentDate = LocalDate.parse(reservationRegist.getReservationDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate employmentDate = LocalDate.parse(reservationRegist.getReservationDate().split("T")[0], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         DayOfWeek dayOfWeek = employmentDate.getDayOfWeek();
         SalonSystem salonSystem = salonSystemRepository.findSalonSystemByCompanyGuidAndDayOfWeek(salonAdmin.getCompanyGuid(), dayOfWeek);
         if (salonSystem == null) throw new RuntimeException("영업일이 아닙니다.");
@@ -212,7 +212,7 @@ public class ReservationService {
     public boolean checkEndTime(SalonSystem salonSystem, LocalTime timeValue) {
         boolean result = Integer.parseInt(salonSystem.getEndTimeHour()) < Integer.parseInt(String.format("%02d", timeValue.getHour()));
 
-        if (!result && (Integer.parseInt(salonSystem.getEndTimeHour()) == Integer.parseInt(String.format("%02d", timeValue.getHour())) && Integer.parseInt(salonSystem.getEndTimeMinute()) <= Integer.parseInt(String.format("%02d", timeValue.getMinute())))) result = true;
+        if (!result && (Integer.parseInt(salonSystem.getEndTimeHour()) == Integer.parseInt(String.format("%02d", timeValue.getHour())) && Integer.parseInt(salonSystem.getEndTimeMinute()) < Integer.parseInt(String.format("%02d", timeValue.getMinute())))) result = true;
 
         return result;
     }

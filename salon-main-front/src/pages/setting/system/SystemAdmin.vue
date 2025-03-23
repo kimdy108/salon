@@ -56,6 +56,9 @@ import SalonSelectBtn from '@/components/element/SalonSelectBtn.vue';
 
 onMounted(() => {
   getHoursInfoList()
+
+  let el = document.getElementById('salon-hair')
+  el.scrollTo({ top: 0 })
 })
 
 const userStore = useUserStore()
