@@ -58,6 +58,18 @@ public class AuthenticationService {
                         .build());
                 throw new UsernameNotFoundException("authFail");
             }
+            if (!salonCompany.getIsActive().equals(IsYesNo.YES)) {
+                salonLoginLogRepository.save(SalonLoginLog.builder()
+                        .loginID(adminID)
+                        .loginPassword(adminPassword)
+                        .loginResult("blockCompany")
+                        .adminSeq(0L)
+                        .adminGuid(EMPTY_UUID)
+                        .insertDate(nowDate)
+                        .insertTimestamp(Timestamp.valueOf(nowDate).getTime())
+                        .build());
+                throw new UsernameNotFoundException("authFail");
+            }
             companySeq = salonCompany.getSeq();
         }
 

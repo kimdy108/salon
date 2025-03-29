@@ -5,11 +5,13 @@ import com.project.salon.main.api.domain.manage.QSalonCompany;
 import com.project.salon.main.api.domain.schedule.QSalonReservation;
 import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.domain.setting.QSalonStyle;
+import com.project.salon.main.api.dto.dashboard.schedule.ScheduleByMonth;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationDayList;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationInfo;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationMonthList;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -111,6 +113,39 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
                 .innerJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
                 .innerJoin(qSalonStyle).on(qSalonReservation.styleSeq.eq(qSalonStyle.seq))
                 .where(bb)
+                .fetch();
+    }
+
+    public Long findScheduleCurrent(String year, String month, String day, UUID companyGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        if (!"0".equals(year)) bb.and(qSalonReservation.reservationYear.eq(year));
+        if (!"0".equals(month)) bb.and(qSalonReservation.reservationMonth.eq(month));
+        if (!"0".equals(day)) bb.and(qSalonReservation.reservationDay.eq(day));
+        if (!EMPTY_UUID.equals(companyGuid)) bb.and(qSalonAdmin.companyGuid.eq(companyGuid));
+
+        return jpaQueryFactory
+                .select(qSalonReservation.seq.count())
+                .from(qSalonReservation)
+                .innerJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
+                .where(bb)
+                .fetchOne();
+    }
+
+    public List<ScheduleByMonth> findScheduleByMonth (String year, UUID companyGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonReservation.reservationYear.eq(year));
+        if (!EMPTY_UUID.equals(companyGuid)) bb.and(qSalonAdmin.companyGuid.eq(companyGuid));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        ScheduleByMonth.class,
+                        qSalonReservation.reservationMonth.castToNum(Integer.class).as("month"),
+                        Expressions.numberTemplate(Integer.class, "{0}", qSalonReservation.count()).as("count")
+                ))
+                .from(qSalonReservation)
+                .innerJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
+                .where(bb)
+                .groupBy(qSalonReservation.reservationMonth)
                 .fetch();
     }
 }

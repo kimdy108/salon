@@ -5,6 +5,8 @@ import com.project.salon.main.api.domain.admin.SalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
 import com.project.salon.main.api.dto.admin.AdminInfo;
 import com.project.salon.main.api.dto.constant.admin.AdminRole;
+import com.project.salon.main.api.dto.constant.common.IsYesNo;
+import com.project.salon.main.api.dto.dashboard.user.UserByMonth;
 import com.project.salon.main.api.dto.manage.master.MasterInfo;
 import com.project.salon.main.api.dto.manage.master.MasterList;
 import com.project.salon.main.api.dto.manage.user.UserInfo;
@@ -14,6 +16,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -193,6 +196,37 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                 .from(qSalonAdmin)
                 .where(bb)
                 .fetchOne();
+    }
+
+    public Long findUserCurrent(int year, int month, boolean isAll) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonAdmin.adminRole.ne(AdminRole.MASTER));
+        if (year != 0) bb.and(qSalonAdmin.insertDate.year().eq(year));
+        if (month != 0) bb.and(qSalonAdmin.insertDate.month().eq(month));
+        if (!isAll) bb.and(qSalonAdmin.isActive.eq(IsYesNo.YES));
+
+        return jpaQueryFactory
+                .select(qSalonAdmin.seq.count())
+                .from(qSalonAdmin)
+                .where(bb)
+                .fetchOne();
+    }
+
+    public List<UserByMonth> findUserByMonth(int year) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonAdmin.adminRole.ne(AdminRole.MASTER));
+        bb.and(qSalonAdmin.insertDate.year().eq(year));
+
+        return jpaQueryFactory
+                        .select(Projections.fields(
+                                UserByMonth.class,
+                                qSalonAdmin.insertDate.month().as("month"),
+                                Expressions.numberTemplate(Integer.class, "{0}", qSalonAdmin.count()).as("count")
+                        ))
+                        .from(qSalonAdmin)
+                        .where(bb)
+                        .groupBy(qSalonAdmin.insertDate.month())
+                        .fetch();
     }
 
     private BooleanExpression eqCompanyName(String searchType, String searchValue) {

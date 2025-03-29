@@ -65,9 +65,14 @@ onMounted(() => {
 
 const userStore = useUserStore()
 
-const searchCategory = ref('companyName')
-const searchCategoryList = ([
+const searchCategory = ref(decryptStringSalt(userStore.getUserRole) === 'MASTER' ? 'companyName' : 'managerName')
+const searchCategoryList = decryptStringSalt(userStore.getUserRole) === 'MASTER' ?
+([
     { name: '고객사명', key: 'companyName' },
+    { name: '담당자이름', key: 'managerName' },
+    { name: '스타일이름', key: 'styleName' }
+]) :
+([
     { name: '담당자이름', key: 'managerName' },
     { name: '스타일이름', key: 'styleName' }
 ])

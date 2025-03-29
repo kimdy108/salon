@@ -73,4 +73,19 @@ public class SalonEmploymentRepositoryImpl extends QuerydslRepositorySupport {
                 .where(bb)
                 .fetchOne();
     }
+
+    public Long findEmploymentCurrent(String year, String month, String day, UUID companyGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        if (!"0".equals(year)) bb.and(qSalonEmployment.employmentYear.eq(year));
+        if (!"0".equals(month)) bb.and(qSalonEmployment.employmentMonth.eq(month));
+        if (!"0".equals(day)) bb.and(qSalonEmployment.employmentDay.eq(day));
+        if (!EMPTY_UUID.equals(companyGuid)) bb.and(qSalonAdmin.companyGuid.eq(companyGuid));
+
+        return jpaQueryFactory
+                .select(qSalonEmployment.seq.count())
+                .from(qSalonEmployment)
+                .innerJoin(qSalonAdmin).on(qSalonEmployment.adminSeq.eq(qSalonAdmin.seq))
+                .where(bb)
+                .fetchOne();
+    }
 }

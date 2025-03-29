@@ -66,9 +66,14 @@ const props = defineProps(['selectedTab'])
 
 const userStore = useUserStore()
 
-const searchCategory = ref('companyName')
-const searchCategoryList = ([
+const searchCategory = ref(decryptStringSalt(userStore.getUserRole) === 'MASTER' ? 'companyName' : 'userName')
+const searchCategoryList = decryptStringSalt(userStore.getUserRole) === 'MASTER' ? 
+([
     { name: '고객사명', key: 'companyName' },
+    { name: '사용자이름', key: 'userName' },
+    { name: '사용자아이디', key: 'userID' }
+]) : 
+([
     { name: '사용자이름', key: 'userName' },
     { name: '사용자아이디', key: 'userID' }
 ])

@@ -58,3 +58,14 @@ export const decryptStringSalt = (str) => {
   const decFinalStr = decryptString(str)
   return decFinalStr.split(divisionChar)[1]
 }
+
+export const makeCurrentByMonth = (value) => {
+  const returnArr = []
+  const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  if (!value) return Array(12).fill(0)
+  for(const i in months) {
+    const include = value.find((item) => item.month === months[i])
+    returnArr.push(include ? include.count : 0)
+  }
+  return returnArr
+}

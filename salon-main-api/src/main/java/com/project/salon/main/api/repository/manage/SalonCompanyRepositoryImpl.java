@@ -2,6 +2,8 @@ package com.project.salon.main.api.repository.manage;
 
 import com.project.salon.main.api.domain.manage.QSalonCompany;
 import com.project.salon.main.api.domain.manage.SalonCompany;
+import com.project.salon.main.api.dto.constant.common.IsYesNo;
+import com.project.salon.main.api.dto.dashboard.company.CompanyByMonth;
 import com.project.salon.main.api.dto.manage.company.CompanyInfo;
 import com.project.salon.main.api.dto.manage.company.CompanyList;
 import com.project.salon.main.api.dto.manage.company.CompanyListAll;
@@ -9,6 +11,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -93,6 +96,35 @@ public class SalonCompanyRepositoryImpl extends QuerydslRepositorySupport {
                         qSalonCompany.managerName.as("managerName")
                 ))
                 .from(qSalonCompany)
+                .fetch();
+    }
+
+    public Long findCompanyCurrent(int year, int month, boolean isAll) {
+        BooleanBuilder bb = new BooleanBuilder();
+        if (year != 0) bb.and(qSalonCompany.insertDate.year().eq(year));
+        if (month != 0) bb.and(qSalonCompany.insertDate.month().eq(month));
+        if (!isAll) bb.and(qSalonCompany.isActive.eq(IsYesNo.YES));
+
+        return jpaQueryFactory
+                .select(qSalonCompany.seq.count())
+                .from(qSalonCompany)
+                .where(bb)
+                .fetchOne();
+    }
+
+    public List<CompanyByMonth> findCompanyByMonth(int year) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonCompany.insertDate.year().eq(year));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        CompanyByMonth.class,
+                        qSalonCompany.insertDate.month().as("month"),
+                        Expressions.numberTemplate(Integer.class, "{0}", qSalonCompany.count()).as("count")
+                ))
+                .from(qSalonCompany)
+                .where(bb)
+                .groupBy(qSalonCompany.insertDate.month())
                 .fetch();
     }
 
