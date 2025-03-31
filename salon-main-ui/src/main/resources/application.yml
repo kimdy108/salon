@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: salon-main-ui
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: local
+  thymeleaf:
+    cache: false
+    prefix: classpath:/static/
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+server:
+  port: 2280
+
+logging:
+  level:
+    root: error
+    com.project.salon.main.ui: debug
+    com.zaxxer.hikari.pool.HikariPool: debug
+    com.zaxxer.hikari: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+server:
+  port: 2880
+
+logging:
+  level:
+    root: error
+    com.project.salon.main.ui: info
+    com.zaxxer.hikari.pool.HikariPool: debug
+    com.zaxxer.hikari: trace
