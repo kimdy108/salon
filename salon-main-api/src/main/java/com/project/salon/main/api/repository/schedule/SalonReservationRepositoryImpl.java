@@ -6,6 +6,7 @@ import com.project.salon.main.api.domain.schedule.QSalonReservation;
 import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.domain.setting.QSalonStyle;
 import com.project.salon.main.api.dto.dashboard.schedule.ScheduleByMonth;
+import com.project.salon.main.api.dto.dashboard.schedule.ScheduleByUser;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationDayList;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationInfo;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationMonthList;
@@ -30,6 +31,7 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    QSalonCompany qSalonCompany = QSalonCompany.salonCompany;
     QSalonAdmin qSalonAdmin = QSalonAdmin.salonAdmin;
     QSalonStyle qSalonStyle = QSalonStyle.salonStyle;
     QSalonReservation qSalonReservation = QSalonReservation.salonReservation;
@@ -146,6 +148,28 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
                 .innerJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
                 .where(bb)
                 .groupBy(qSalonReservation.reservationMonth)
+                .fetch();
+    }
+
+    public List<ScheduleByUser> findScheduleByUser (String year, String month, String day, UUID companyGuid) {
+        BooleanBuilder bb = new BooleanBuilder();
+        bb.and(qSalonReservation.reservationYear.eq(year));
+        bb.and(qSalonReservation.reservationMonth.eq(month));
+        bb.and(qSalonReservation.reservationDay.eq(day));
+        if (!EMPTY_UUID.equals(companyGuid)) bb.and(qSalonCompany.companyGuid.eq(companyGuid));
+
+        return jpaQueryFactory
+                .select(Projections.fields(
+                        ScheduleByUser.class,
+                        qSalonCompany.companyName.as("companyName"),
+                        qSalonAdmin.adminName.as("userName"),
+                        qSalonReservation.reservationPartnerGuid.countDistinct().as("scheduleCount")
+                ))
+                .from(qSalonReservation)
+                .rightJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
+                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
+                .where(bb)
+                .groupBy(qSalonReservation.adminSeq)
                 .fetch();
     }
 }

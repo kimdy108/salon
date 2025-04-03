@@ -5,11 +5,12 @@
     </div>
 
     <div class="bg-white rounded-lg shadow-lg px-8 py-6 mb-5">
-      <div class="text-left mb-5">
-        <div class="text-xl font-bold text-gray-900">영업 시간</div>
+      <div class="text-left mb-5 grid grid-cols-2 gap-6">
+        <div class="text-xl font-bold text-gray-900 mb-5">영업 시간</div>
+        <SalonSelect v-if="decryptStringSalt(userStore.getUserRole) === 'MASTER'" selectTitle="고객사" selectPlaceholder="고객사" :isRequire="false" :options="companyList" optionTitle="companyName" optionSub="managerName" optionValue="companyGuid" v-model:inputValue="companyGuid"></SalonSelect>
       </div>
 
-      <div class="card">
+      <div v-if="checkCompanyGuid" class="card">
         <Accordion :value="['0']" multiple>
           <AccordionPanel v-for="val in weekArrays" :key="val.id" :value="val.id" >
             <AccordionHeader class="!text-lg">{{ val.dayKr }}</AccordionHeader>
@@ -38,8 +39,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { timeRange } from '@/references/config';
+import { computed, onMounted, ref, watch } from 'vue';
+import { emptyUUID, timeRange } from '@/references/config';
 import { decryptStringSalt } from '@/utils/common';
 import { useUserStore } from '@/stores/userStore';
 
@@ -52,10 +53,11 @@ import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 import Select from 'primevue/select';
 
+import SalonSelect from '@/components/element/SalonSelect.vue'
 import SalonSelectBtn from '@/components/element/SalonSelectBtn.vue';
 
 onMounted(() => {
-  getHoursInfoList()
+  initData()
 
   let el = document.getElementById('salon-hair')
   el.scrollTo({ top: 0 })
@@ -78,6 +80,29 @@ const weekArrays = ref([
   { id : 6, dayEng : 'SATURDAY', dayKr : '토요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
 ])
 
+const companyList = ref([])
+const companyGuid = ref(decryptStringSalt(userStore.getCurrentUser.ucg))
+const checkCompanyGuid = computed(() => {
+  return companyGuid.value !== emptyUUID
+})
+
+const initData = () => {
+  if (decryptStringSalt(userStore.getUserRole) === 'MASTER') getCompanyList()
+  else getHoursInfoList()
+}
+
+const weekArrayReset = () => {
+  weekArrays.value = [
+    { id : 0, dayEng : 'SUNDAY', dayKr : '일요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+    { id : 1, dayEng : 'MONDAY', dayKr : '월요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+    { id : 2, dayEng : 'TUESDAY', dayKr : '화요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+    { id : 3, dayEng : 'WEDNESDAY', dayKr : '수요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+    { id : 4, dayEng : 'THURSDAY', dayKr : '목요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+    { id : 5, dayEng : 'FRIDAY', dayKr : '금요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+    { id : 6, dayEng : 'SATURDAY', dayKr : '토요일', hoursOption : 'HOLIDAY', startTime : '00:00', endTime : '00:00' },
+  ]
+}
+
 const hoursRegist = (val) => {
   if (val.hoursOption === null || val.hoursOption === '') {
     AlertService.normalAlertAction('근무 여부를 확인해주세요.', '시스템 설정', '확인', 'error')
@@ -97,7 +122,7 @@ const hoursRegist = (val) => {
 const hoursRegistAction = async (val) => {
   const reqHeader = { accept: 'application/json' }
   const reqData = {
-    'companyGuid' : decryptStringSalt(userStore.getCurrentUser.ucg),
+    'companyGuid' : companyGuid.value,
     'dayOfWeek' : val.dayEng,
     'hoursCategory' : val.hoursOption,
     'startTime' : val.startTime,
@@ -117,9 +142,10 @@ const getHoursInfoList = async () => {
   const infoListResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'GET',
-    url: `/main/setting/system/info/list/${decryptStringSalt(userStore.getCurrentUser.ucg)}`
+    url: `/main/setting/system/info/list/${companyGuid.value}`
   })
   if (infoListResult.retStatus) {
+    weekArrayReset()
     for (let i = 0; i < infoListResult.retData.length; i++) {
       const valueOfResult = infoListResult.retData[i]
       const valueOfWeek = weekArrays.value.filter(item => item.dayEng === valueOfResult.dayOfWeek)[0]
@@ -133,6 +159,22 @@ const getHoursInfoList = async () => {
     }
   }
 }
+
+const getCompanyList = async () => {
+  const reqHeader = { accept: 'application/json' }
+  const companyListResult = await ApiService.requestAPI({
+    headers: reqHeader,
+    method: 'GET',
+    url: '/main/manage/company/list',
+  })
+  if (companyListResult.retStatus) {
+    companyList.value = companyListResult.retData
+  }
+}
+
+watch(() => companyGuid.value, (newVal) => {
+  if(newVal != emptyUUID) getHoursInfoList()
+})
 </script>
 
 <style lang="scss" scoped>

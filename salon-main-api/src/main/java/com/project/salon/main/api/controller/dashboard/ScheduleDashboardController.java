@@ -29,4 +29,9 @@ public class ScheduleDashboardController {
     public ResponseEntity<ResponseMsg> getCurrentDashboardDay(@RequestParam String companyGuid) {
         return ResponseMsg.successResponse(scheduleDashboardService.getScheduleByEmployment(companyGuid));
     }
+
+    @GetMapping("/current/user")
+    public ResponseEntity<ResponseMsg> getCurrentDashboardUser(@RequestParam String companyGuid) {
+        return ResponseMsg.successResponse(scheduleDashboardService.getScheduleByUser(companyGuid));
+    }
 }

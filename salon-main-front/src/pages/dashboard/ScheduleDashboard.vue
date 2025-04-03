@@ -57,6 +57,7 @@ onMounted(() => {
   getCurrentSchedule()
   getCurrentScheduleByMonth()
   getCurrentScheduleByDay()
+  getCurrentScheduleByUser()
 })
 
 const userStore = useUserStore()
@@ -68,8 +69,8 @@ const scheduleCountData = ref([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 const daySchedule = ref(0)
 const employmentUser = ref(0)
-const userScheduleXdata = ref(['샘물-함진원', '샘물-백현민'])
-const userScheduleCountData = ref([0,0])
+const userScheduleXdata = ref([])
+const userScheduleCountData = ref([])
 
 const getCurrentSchedule = async () => {
   const reqHeader = { accept: 'application/json' }
@@ -101,15 +102,37 @@ const getCurrentScheduleByMonth = async () => {
 const getCurrentScheduleByDay = async () => {
   const reqHeader = { accept: 'application/json' }
   const reqParams = { 'companyGuid': decryptStringSalt(userStore.getCurrentUser.ucg) }
-  const currentResult = await ApiService.requestAPI({
+  const currentByDayResult = await ApiService.requestAPI({
     headers: reqHeader,
     method: 'GET',
     url: '/main/dashboard/schedule/current/day',
     params: reqParams
   })
-  if (currentResult.retStatus) {
-    daySchedule.value = currentResult.retData.daySchedule
-    employmentUser.value = currentResult.retData.employmentUser
+  if (currentByDayResult.retStatus) {
+    daySchedule.value = currentByDayResult.retData.daySchedule
+    employmentUser.value = currentByDayResult.retData.employmentUser
+  }
+}
+
+const getCurrentScheduleByUser = async () => {
+  const reqHeader = { accept: 'application/json' }
+  const reqParams = { 'companyGuid': decryptStringSalt(userStore.getCurrentUser.ucg) }
+  const currentByUserResult = await ApiService.requestAPI({
+    headers: reqHeader,
+    method: 'GET',
+    url: '/main/dashboard/schedule/current/user',
+    params: reqParams
+  })
+  if (currentByUserResult.retStatus) {
+    console.log(currentByUserResult.retData)
+    let userXData = []
+    let userCountData = []
+    for (let i = 0; i < currentByUserResult.retData.length; i++) {
+      userXData.push(currentByUserResult.retData[i].companyName + '-' + currentByUserResult.retData[i].userName)
+      userCountData.push(currentByUserResult.retData[i].scheduleCount)
+    }
+    userScheduleXdata.value = userXData
+    userScheduleCountData.value = userCountData
   }
 }
 </script>

@@ -2,6 +2,7 @@ package com.project.salon.main.api.service.dashboard;
 
 import com.project.salon.main.api.dto.dashboard.schedule.ScheduleByEmployment;
 import com.project.salon.main.api.dto.dashboard.schedule.ScheduleByMonth;
+import com.project.salon.main.api.dto.dashboard.schedule.ScheduleByUser;
 import com.project.salon.main.api.dto.dashboard.schedule.ScheduleCurrent;
 import com.project.salon.main.api.repository.schedule.SalonEmploymentRepositoryImpl;
 import com.project.salon.main.api.repository.schedule.SalonReservationRepositoryImpl;
@@ -42,5 +43,13 @@ public class ScheduleDashboardService {
                 salonReservationRepositoryImpl.findScheduleCurrent(year, month, day, UUID.fromString(companyGuid)).intValue(),
                 salonEmploymentRepositoryImpl.findEmploymentCurrent(year, month, day, UUID.fromString(companyGuid)).intValue()
         );
+    }
+
+    public List<ScheduleByUser> getScheduleByUser(String companyGuid) {
+        String year = String.valueOf(LocalDateTime.now().getYear());
+        String month = String.format("%02d", LocalDateTime.now().getMonthValue());
+        String day = String.format("%02d", LocalDateTime.now().getDayOfMonth());
+
+        return salonReservationRepositoryImpl.findScheduleByUser(year, month, day, UUID.fromString(companyGuid));
     }
 }
