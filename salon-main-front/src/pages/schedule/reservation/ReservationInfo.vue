@@ -29,7 +29,7 @@
       <template #footer>
         <div>
           <button class="text-gray-700 bg-white hover:bg-gray-100 border-gray-200 rounded-lg shadow-md py-3 px-6 text-base mx-2" @click="closeInfoModal">닫기</button>
-          <button v-if="checkUserRole" class="text-red-600 bg-red-200 hover:bg-red-300 border-red-200 rounded-lg shadow-md py-3 px-6 text-base mx-2" @click="reservationDelete">취소</button>
+          <button v-if="checkUserRole || checkOwner" class="text-red-600 bg-red-200 hover:bg-red-300 border-red-200 rounded-lg shadow-md py-3 px-6 text-base mx-2" @click="reservationDelete">예약 취소</button>
         </div>
       </template>
 
@@ -59,7 +59,9 @@ const closeInfoModal = () => {
 
 const userStore = useUserStore()
 const checkUserRole = decryptStringSalt(userStore.getUserRole) === 'MASTER' || decryptStringSalt(userStore.getUserRole) === 'ADMIN'
+const checkOwner = ref(false)
 
+const userGuid = ref('')
 const reservationGuid = ref('')
 const reservationDate = ref('')
 const reservationTime = ref('')
@@ -94,6 +96,7 @@ const getReservationInfo = async () => {
     url : `/main/schedule/reservation/info/${props.infoGuid}`
   })
   if (infoResult.retStatus) {
+    userGuid.value = infoResult.retData.userGuid
     reservationGuid.value = infoResult.retData.reservationGuid
     reservationDate.value = infoResult.retData.reservationYear + '-' + infoResult.retData.reservationMonth + '-' + infoResult.retData.reservationDay
     reservationTime.value = infoResult.retData.reservationHour + ':' + infoResult.retData.reservationMinute + ':00'
@@ -102,6 +105,8 @@ const getReservationInfo = async () => {
     clientName.value = infoResult.retData.clientName
     clientNumber.value = infoResult.retData.clientNumber
     descriptionNote.value = infoResult.retData.descriptionNote
+
+    checkOwner.value = decryptStringSalt(userStore.getCurrentUser.ugd) === userGuid.value
   }
 }
 

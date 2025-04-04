@@ -2,6 +2,7 @@ package com.project.salon.main.api.repository.schedule;
 
 import com.project.salon.main.api.domain.admin.QSalonAdmin;
 import com.project.salon.main.api.domain.manage.QSalonCompany;
+import com.project.salon.main.api.domain.schedule.QSalonEmployment;
 import com.project.salon.main.api.domain.schedule.QSalonReservation;
 import com.project.salon.main.api.domain.schedule.SalonReservation;
 import com.project.salon.main.api.domain.setting.QSalonStyle;
@@ -11,8 +12,10 @@ import com.project.salon.main.api.dto.schedule.reservation.ReservationDayList;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationInfo;
 import com.project.salon.main.api.dto.schedule.reservation.ReservationMonthList;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -35,6 +38,7 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
     QSalonAdmin qSalonAdmin = QSalonAdmin.salonAdmin;
     QSalonStyle qSalonStyle = QSalonStyle.salonStyle;
     QSalonReservation qSalonReservation = QSalonReservation.salonReservation;
+    QSalonEmployment qSalonEmployment = QSalonEmployment.salonEmployment;
 
     public ReservationInfo findReservationInfo (UUID reservationGuid) {
         BooleanBuilder bb = new BooleanBuilder();
@@ -43,6 +47,7 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
         return jpaQueryFactory
                 .select(Projections.fields(
                         ReservationInfo.class,
+                        qSalonReservation.adminGuid.as("userGuid"),
                         qSalonReservation.reservationGuid.as("reservationGuid"),
                         qSalonReservation.reservationYear.as("reservationYear"),
                         qSalonReservation.reservationMonth.as("reservationMonth"),
@@ -152,23 +157,33 @@ public class SalonReservationRepositoryImpl extends QuerydslRepositorySupport {
     }
 
     public List<ScheduleByUser> findScheduleByUser (String year, String month, String day, UUID companyGuid) {
-        BooleanBuilder bb = new BooleanBuilder();
-        bb.and(qSalonReservation.reservationYear.eq(year));
-        bb.and(qSalonReservation.reservationMonth.eq(month));
-        bb.and(qSalonReservation.reservationDay.eq(day));
-        if (!EMPTY_UUID.equals(companyGuid)) bb.and(qSalonCompany.companyGuid.eq(companyGuid));
+        BooleanBuilder bbMain = new BooleanBuilder();
+        bbMain.and(qSalonEmployment.employmentYear.eq(year));
+        bbMain.and(qSalonEmployment.employmentMonth.eq(month));
+        bbMain.and(qSalonEmployment.employmentDay.eq(day));
+        if (!EMPTY_UUID.equals(companyGuid)) bbMain.and(qSalonCompany.companyGuid.eq(companyGuid));
+
+        BooleanBuilder bbSub = new BooleanBuilder();
+        bbSub.and(qSalonReservation.adminSeq.eq(qSalonAdmin.seq));
+        bbSub.and(qSalonReservation.reservationYear.eq(year));
+        bbSub.and(qSalonReservation.reservationMonth.eq(month));
+        bbSub.and(qSalonReservation.reservationDay.eq(day));
 
         return jpaQueryFactory
                 .select(Projections.fields(
                         ScheduleByUser.class,
                         qSalonCompany.companyName.as("companyName"),
                         qSalonAdmin.adminName.as("userName"),
-                        qSalonReservation.reservationPartnerGuid.countDistinct().as("scheduleCount")
+                        ExpressionUtils.as(JPAExpressions
+                                .select(qSalonReservation.reservationPartnerGuid.countDistinct())
+                                .from(qSalonReservation)
+                                .where(bbSub), "scheduleCount")
                 ))
                 .from(qSalonReservation)
-                .rightJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
+                .innerJoin(qSalonAdmin).on(qSalonReservation.adminSeq.eq(qSalonAdmin.seq))
                 .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
-                .where(bb)
+                .innerJoin(qSalonEmployment).on(qSalonAdmin.seq.eq(qSalonEmployment.adminSeq))
+                .where(bbMain)
                 .groupBy(qSalonReservation.adminSeq)
                 .fetch();
     }

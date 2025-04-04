@@ -10,6 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationInfo {
+    UUID userGuid;
     UUID reservationGuid;
     String reservationYear;
     String reservationMonth;

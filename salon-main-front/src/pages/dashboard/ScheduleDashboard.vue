@@ -33,8 +33,11 @@
         </div>
 
         <div class="bg-white rounded-xl shadow-md w-full py-5">
-          <div>
+          <div v-if="isEmployment">
             <SalonChart titleValue="사용자별 예약 현황" :xData="userScheduleXdata" :countData="userScheduleCountData" idValue="userChart" seriesValue="사용자" />
+          </div>
+          <div v-else>
+            <p class="font-bold text-red-500 text-xl text-center">금일 근무자가 없습니다.</p>
           </div>
         </div>
       </div>
@@ -71,6 +74,8 @@ const daySchedule = ref(0)
 const employmentUser = ref(0)
 const userScheduleXdata = ref([])
 const userScheduleCountData = ref([])
+
+const isEmployment = ref(false)
 
 const getCurrentSchedule = async () => {
   const reqHeader = { accept: 'application/json' }
@@ -124,15 +129,18 @@ const getCurrentScheduleByUser = async () => {
     params: reqParams
   })
   if (currentByUserResult.retStatus) {
-    console.log(currentByUserResult.retData)
-    let userXData = []
-    let userCountData = []
-    for (let i = 0; i < currentByUserResult.retData.length; i++) {
-      userXData.push(currentByUserResult.retData[i].companyName + '-' + currentByUserResult.retData[i].userName)
-      userCountData.push(currentByUserResult.retData[i].scheduleCount)
+    if (currentByUserResult.retData.length !== 0) {
+      isEmployment.value = true
+      
+      let userXData = []
+      let userCountData = []
+      for (let i = 0; i < currentByUserResult.retData.length; i++) {
+        userXData.push(currentByUserResult.retData[i].companyName + '-' + currentByUserResult.retData[i].userName)
+        userCountData.push(currentByUserResult.retData[i].scheduleCount)
+      }
+      userScheduleXdata.value = userXData
+      userScheduleCountData.value = userCountData
     }
-    userScheduleXdata.value = userXData
-    userScheduleCountData.value = userCountData
   }
 }
 </script>
