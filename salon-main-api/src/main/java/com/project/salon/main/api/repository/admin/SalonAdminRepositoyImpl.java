@@ -134,14 +134,12 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonAdmin.adminGuid.as("masterGuid"),
                         qSalonAdmin.adminID.as("masterID"),
                         qSalonAdmin.adminName.as("masterName"),
-                        qSalonCompany.companyName.as("companyName"),
                         qSalonAdmin.adminRole.as("masterRole"),
                         qSalonAdmin.isActive.as("isActive"),
                         qSalonAdmin.insertDate.as("insertDate"),
                         qSalonAdmin.updateDate.as("updateDate")
                 ))
                 .from(qSalonAdmin)
-                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(eqCompanyName(searchType, searchValue), eqUserName(searchType, searchValue), bb)
                 .orderBy(sortedColumn)
                 .limit(limit)
@@ -163,7 +161,6 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
         return  jpaQueryFactory
                 .select(Projections.fields(
                         MasterInfo.class,
-                        qSalonCompany.companyName.as("companyName"),
                         qSalonAdmin.adminGuid.as("masterGuid"),
                         qSalonAdmin.adminID.as("masterID"),
                         qSalonAdmin.adminName.as("masterName"),
@@ -173,7 +170,6 @@ public class SalonAdminRepositoyImpl extends QuerydslRepositorySupport {
                         qSalonAdmin.descriptionNote.as("descriptionNote")
                 ))
                 .from(qSalonAdmin)
-                .innerJoin(qSalonCompany).on(qSalonAdmin.companySeq.eq(qSalonCompany.seq))
                 .where(bb)
                 .fetchOne();
     }
